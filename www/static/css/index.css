@@ -1,0 +1,76 @@
+.page_footer{
+
+    position: relative;
+    text-align: center;
+    font-size: xx-small;
+    color: darkgray;
+
+    display: flex;
+    justify-content: center;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+.bodyDiv{
+    display: flex;
+    justify-content: space-around;
+    min-height: 91%;
+    height: auto !important;
+}
+.bodyDiv div{
+    height: 400px;
+    width: 48%;
+}
+.bodyDiv div textarea{
+    height: 98%;
+    width: 99%;
+}
+.firstRow{
+    display: flex;
+    justify-content: left;
+    margin-bottom: 5px;
+    margin-left: 15px;
+}
+.firstRow div{
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 10px;
+}
+
+.button-group{
+    margin-left: 10px;
+}
+#inputContent{
+    border: 1px solid #1B9AF7;
+    height: 36px;
+    width: 240px;
+    padding-left: 10px;
+    margin-left: 5px;
+}
+
+#rightContent{
+    /*white-space: pre-line;*/  /* html内容原样展示*/
+    /*border: 1px ;*/
+    max-width: 100%;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.clearAll{
+    display: flex;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 22px;
+    font-size: 12px;
+    padding-left: 7px;
+}
+
+#sum{
+    width: 80px;
+    max-width: 80px;
+    display: flex;
+    justify-content: flex-start;
+}
