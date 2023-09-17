@@ -1,8 +1,10 @@
 package main
 
 import (
+	"dev-utils/config"
 	"dev-utils/src/routers"
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +24,7 @@ func main() {
 
 	// 启动
 	log.Println("启动成功")
-	err := g.Run(":8559")
+	err := g.Run(":" + strconv.Itoa(config.Conf.Port))
 	if err != nil {
 		log.Fatalln("启动失败: ", err)
 		return
