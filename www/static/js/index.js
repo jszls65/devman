@@ -362,15 +362,22 @@ function mergeRequst() {
         $('#inputContent').focus();
         return;
     }
+    var splis = privateBranch.split(' ');
+    var targetBranch = "master";;
+    if(splis.length >= 2){
+        privateBranch = splis[0] || ""
+        targetBranch = splis[1] || ""
+    }else if(privateBranch.indexOf('hotfix') != -1){
+        targetBranch = "master";
+    }
+
     // 被指派人的id
     var assignee_ids = $("#leftContent").val() || "50";
     // 最后一个中划线
     // http://101.37.39.148:20080/smartgroup/smartadjava/-/merge_requests/new?merge_request%5Bsource_branch%5D=dev_1.0.0_0721-zls&merge_request%5Btarget_branch%5D=dev_1.0.0_0721
-    var targetBranch = privateBranch.substring(0, privateBranch.lastIndexOf('_'));
+    targetBranch = targetBranch != "" ? targetBranch : privateBranch.substring(0, privateBranch.lastIndexOf('_'));
     targetBranch = targetBranch.replaceAll('/', '%2F');
-    if(privateBranch.indexOf('hotfix') != -1){
-        targetBranch = "master";
-    }
+    
     privateBranch = privateBranch.replaceAll('/', '%2F');
     var url = "http://101.37.39.148:20080/smartgroup/smartadjava/-/merge_requests/new?merge_request%5Bsource_branch%5D="+ privateBranch +"&merge_request%5Btarget_branch%5D=" + targetBranch+"&merge_request[assignee_ids][]="+assignee_ids+"&merge_request[force_remove_source_branch]=1";
     console.log("url: "+ url);
