@@ -5,11 +5,12 @@ package controllers
 import (
 	"dev-utils/src/common"
 	"dev-utils/src/persistence"
-	"dev-utils/src/persistence/model"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/time/rate"
+	"dev-utils/src/persistence/models"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/time/rate"
 )
 
 type RequestLogController struct {
@@ -18,7 +19,7 @@ type RequestLogController struct {
 func (s RequestLogController) Save(c *gin.Context) {
 	db := persistence.DB
 	// 保存日志数据
-	reqLog := model.RequestLog{
+	reqLog := models.RequestLog{
 		IP:         c.ClientIP(),
 		Plateform:  c.GetHeader("User-Agent"),
 		Path:       c.FullPath(),
@@ -35,7 +36,7 @@ func (s RequestLogController) Save(c *gin.Context) {
 func (r RequestLogController) Sum(c *gin.Context) {
 	db := persistence.DB
 	var count int64
-	db.Model(&model.RequestLog{}).Where("1=1").Count(&count)
+	db.Model(&models.RequestLog{}).Where("1=1").Count(&count)
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
 		"msg":  "success",

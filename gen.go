@@ -14,20 +14,22 @@ type Querier interface {
 	FilterWithNameAndRole(name, role string) ([]gen.T, error)
 }
 
-func main2() {
+func main() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath: "./src/persistence/model",
+		OutPath: "./src/persistence/models",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 	})
 
-	gormdb, err := gorm.Open(sqlite.Open("./dev-utils.db"), &gorm.Config{})
+	gormdb, err := gorm.Open(sqlite.Open("../dev-utils.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("连接数据库失败: ", err)
 		return
 	}
 	g.UseDB(gormdb)
 
-	g.GenerateModelAs("request_log", "RequestLog")
+	g.GenerateModelAs("interface_config", "InterfaceConfig")
+	// g.GenerateModelAs("interface_call_log", "InterfaceCallLog")
+	// g.GenerateModelAs("request_log", "RequestLog")
 	//g.GenerateModelAs("request_summary", "RequestSummary")
 	g.Execute()
 }

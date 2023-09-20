@@ -2,6 +2,7 @@ package main
 
 import (
 	"dev-utils/config"
+	_ "dev-utils/src/job"
 	"dev-utils/src/routers"
 	"log"
 	"strconv"
