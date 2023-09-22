@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -40,6 +41,16 @@ type LogConfig struct {
 	MaxBackUps int    `mapstructure:"max_backups"`
 }
 
+type DingTalk struct {
+	Url           string        `mapstructure:"url"`
+	AlertDuration float64       `mapstructure:"alert_duration"`
+	NextDuration  time.Duration `mapstructure:"next_duration"`
+}
+
+type Job struct {
+	Enable bool `mapstructure:"enable"`
+}
+
 type LibraryConfig struct {
 	Mode          string `mapstructure:"mode"`
 	Port          int    `mapstructure:"port"`
@@ -47,6 +58,8 @@ type LibraryConfig struct {
 	*MysqlConfig  `mapstructure:"mysql"`
 	*RedisConfig  `mapstructure:"redis"`
 	*SqliteConfig `mapstructure:"sqlite"`
+	*DingTalk     `mapstructure:"ding_talk"`
+	*Job          `mapstructure:"job"`
 }
 
 func init() {
