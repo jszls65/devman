@@ -24,3 +24,6 @@ go.mod
 go.sum
 .idea
 
+dev-utils.db
+dev-utils
+

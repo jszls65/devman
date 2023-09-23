@@ -1,0 +1,51 @@
+{{ define "alert/list.html"}}
+<html>
+{{ template "common/page_head.html" . }}
+
+<body>
+<!--隐藏区域-->
+<input type="hidden" id="env" value="{{.env}}"/>
+
+<!--条件搜索-->
+<div class="layui-form-item">
+    <div class="layui-inline layui-col-md4">
+        <label class="layui-form-label">服务名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="appName" id="appName"   placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline layui-col-md4">
+        <label class="layui-form-label">负责人</label>
+        <div class="layui-input-block">
+            <input type="text" name="owner" id="owner"   placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-inline layui-col-md3">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-filter="formDemo" onclick="search();">搜索</button>
+            <button class="layui-btn layui-btn-primary" onclick="clearForm()">重置</button>
+        </div>
+    </div>
+</div>
+
+<!--数据表-->
+<table id="alertlist" lay-filter="test"></table>
+
+
+<!--工具栏模板：-->
+<script type="text/html" id="tableToolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add" onclick="loadAdd()">添加</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+</body>
+<script>
+    dataTableInit();
+</script>
+</html>
+
+
+{{end}}
