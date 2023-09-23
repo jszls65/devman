@@ -51,7 +51,7 @@ func (sa *ServiceAliveCheck) doJobsItem(interfaceConfig *models.InterfaceConfig,
 		} else {
 			// 计算失败时间差
 			failDuration := time.Now().Sub(lastFailTime)
-			if failDuration.Minutes() > config.Conf.DingTalk.AlertDuration {
+			if failDuration.Minutes() >= config.Conf.DingTalk.AlertDuration {
 
 				dingTalkMsg := fmt.Sprintf("服务告警: [%s]服务没有响应, 请检查 ! ", interfaceConfig.AppName)
 				log.Println("发送钉钉消息: ", dingTalkMsg)

@@ -16,7 +16,7 @@ func init() {
 		return
 	}
 	cr = cron.New(cron.WithSeconds())
-	_, err := cr.AddJob("*/10 * * * * *", &ServiceAliveCheck{})
+	_, err := cr.AddJob("*/30 * * * * *", &ServiceAliveCheck{})
 	if err != nil {
 		log.Println("定时任务执行失败:", err)
 		return
