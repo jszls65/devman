@@ -9,6 +9,7 @@ import (
 	"dev-utils/src/structs"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 type AlertController struct{}
@@ -35,7 +36,7 @@ func (ic AlertController) GetAlertList(c *gin.Context) {
 		return
 	}
 
-	var interfaceConfigs []models.InterfaceConfig
+	var interfaceConfigs []models.AlertJob
 	db := persistence.DB.Model(&interfaceConfigs)
 	if req.AppName != "" {
 		db.Where("app_name like ?", "%"+req.AppName+"%")
@@ -54,5 +55,16 @@ func (ic AlertController) GetAlertList(c *gin.Context) {
 		"data":  dataMap,
 		"count": len(interfaceConfigs),
 	})
+
+}
+
+func (ac AlertController) Add(c *gin.Context) {
+	req := new(structs.AlertCreateReq)
+	c.ShouldBind(&req)
+
+	job := &models.AlertJob{AppName: req.AppName, HTTPMethod: req.HttpMethod, URL: req.Url, State: req.State,
+		Owner: req.Owner, CreateTime: time.Now(), UpdateTime: time.Now()}
+	persistence.DB.Create(&job)
+	c.JSON(http.StatusOK, common.ResultMsg("操作成功"))
 
 }

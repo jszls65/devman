@@ -51,8 +51,17 @@ function clearForm(){
 function loadAdd(){
     $.get('/alert/load-add', {}, function(str){
         layer.open({
-            type: 1,
-            content: str //注意，如果str是object，那么需要字符拼接。
+            type: 1
+            ,title: "添加"
+            ,area: ['700px', '450px']
+            ,content: str //注意，如果str是object，那么需要字符拼接。
         });
     });
 }
+
+function testUrl(){
+    var url = $('#alertUrl').val() || "";
+    var method = $('#alertMethod').val() || "";
+
+}
+

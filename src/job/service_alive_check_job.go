@@ -22,7 +22,7 @@ type ServiceAliveCheck struct {
 
 func (sa *ServiceAliveCheck) Run() {
 	db := persistence.DB
-	interfaceConfigList := []*models.InterfaceConfig{}
+	interfaceConfigList := []*models.AlertJob{}
 	db.Where("type = ?", "alive").Find(&interfaceConfigList)
 	if len(interfaceConfigList) == 0 {
 		log.Println("无接口配置数据")
@@ -35,7 +35,7 @@ func (sa *ServiceAliveCheck) Run() {
 
 }
 
-func (sa *ServiceAliveCheck) doJobsItem(interfaceConfig *models.InterfaceConfig, db *gorm.DB) {
+func (sa *ServiceAliveCheck) doJobsItem(interfaceConfig *models.AlertJob, db *gorm.DB) {
 	startTime := time.Now()
 	httpResult, _ := sa.httpClient(interfaceConfig.HTTPMethod, interfaceConfig.URL)
 	log.Println("请求接口是否成功: ", httpResult)
@@ -67,9 +67,9 @@ func (sa *ServiceAliveCheck) doJobsItem(interfaceConfig *models.InterfaceConfig,
 	interfaceConfig.CallNum += 1            // 总次数+1
 	interfaceConfig.UpdateTime = time.Now() // 记录更新时间
 	// 更新配置表数据
-	db.Where("id = ?", interfaceConfig.ID).Updates(models.InterfaceConfig{CallNum: interfaceConfig.CallNum, UpdateTime: interfaceConfig.UpdateTime})
+	db.Where("id = ?", interfaceConfig.ID).Updates(models.AlertJob{CallNum: interfaceConfig.CallNum, UpdateTime: interfaceConfig.UpdateTime})
 	// 保存日志
-	logItem := &models.InterfaceCallLog{InterfaceConfigID: interfaceConfig.ID, Result: httpResult, CostTime: int32(apiDuration.Milliseconds()), CreateTime: time.Now(), UpdateTime: time.Now()}
+	logItem := &models.AlertLog{AlertJobsID: interfaceConfig.ID, Result: httpResult, CostTime: int32(apiDuration.Milliseconds()), CreateTime: time.Now(), UpdateTime: time.Now()}
 	db.Create(logItem)
 }
 

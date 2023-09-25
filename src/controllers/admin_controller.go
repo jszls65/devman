@@ -18,7 +18,7 @@ func (ic AdminController) Welcome(c *gin.Context) {
 }
 
 // 结构体列表转map,并对日期进行格式化
-func handleDateFormat(list []models.InterfaceConfig) []map[string]interface{} {
+func handleDateFormat(list []models.AlertJob) []map[string]interface{} {
 	mapList := make([]map[string]interface{}, 0)
 	for _, val := range list {
 		valBytes, _ := json.Marshal(&val)

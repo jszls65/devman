@@ -27,7 +27,8 @@ func main() {
 	}
 	g.UseDB(gormdb)
 
-	g.GenerateModelAs("interface_config", "InterfaceConfig")
+	//g.GenerateModelAs("alert_log", "AlertLog")
+	g.GenerateModelAs("alert_job", "AlertJob")
 	// g.GenerateModelAs("interface_call_log", "InterfaceCallLog")
 	// g.GenerateModelAs("request_log", "RequestLog")
 	//g.GenerateModelAs("request_summary", "RequestSummary")

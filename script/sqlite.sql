@@ -25,25 +25,30 @@ create table request_summary(  -- 访问次数统计表
 
 
 -- 接口配置
-drop table if exists `interface_config`;
-CREATE table `interface_config`(
-	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`app_name` text not null default '',  -- 服务名称
-	`type` text not null default '',  -- 类型: alive-存活, data-数据校验, autotest-自动化测试
-	`http_method` text not null default '',  -- get post
-	`url` text not null default '',  -- 请求的url
-	`owmer` text not null default '',  -- 负责人
-	`phone` text not null default '',  -- 负责人手机号
-	`fail_num` INTEGER not null default 0,  -- 失败次数
-	`call_num` INTEGER not null default 0,  -- 调用总次数
-	create_time datetime not null,  -- 创建时间
-    update_time datetime not null  -- 更新时间
+drop table if exists `alert_job`;
+CREATE table `alert_job`(
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `app_name` text not null default '',  -- 服务名称
+    `type` text not null default '',  -- 类型: alive-存活, data-数据校验, autotest-自动化测试
+    `http_method` text not null default '',  -- get post
+    `url` text not null default '',  -- 请求的url
+    `owner` text not null default '',  -- 负责人
+    `phone` text not null default '',  -- 负责人手机号
+    `exe_cycle` integer not null default 30, -- 执行周期, 每多少秒.
+    `last_exe_time` datetime null , -- 上次执行时间.
+    `last_exe_result` integer not null default 1, -- 上次执行结果 0-失败 1-成功
+    `in_fail_num` integer not null default 0, -- 连续失败次数, 成功会被改成0
+    `fail_num` INTEGER not null default 0,  -- 失败次数
+    `call_num` INTEGER not null default 0,  -- 调用总次数
+    `state` integer not null default 1, -- 状态 0-停止 1-运行
+    `create_time` datetime not null,  -- 创建时间
+    `update_time` datetime not null  -- 更新时间
 );
 
 
 -- 接口调用日志表
-drop table if exists `interface_call_log`;
-CREATE table `interface_call_log`(
+drop table if exists `alert_log`;
+CREATE table `alert_log`(
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`interface_config_id` INTEGER not null, 
 	`result` integer not null default 1, -- 1-成功, 2-失败
