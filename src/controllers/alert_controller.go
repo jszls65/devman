@@ -7,6 +7,7 @@ import (
 	"dev-utils/src/persistence"
 	"dev-utils/src/persistence/models"
 	"dev-utils/src/structs"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -67,4 +68,18 @@ func (ac AlertController) Add(c *gin.Context) {
 	persistence.DB.Create(&job)
 	c.JSON(http.StatusOK, common.ResultMsg("操作成功"))
 
+}
+
+func (ac AlertController) Del(c *gin.Context) {
+	data, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, common.ResultMsg("参数异常"))
+		return
+	}
+	paramMap := make(map[string][]int, 0)
+	json.Unmarshal(data, &paramMap)
+
+	jobs := []models.AlertJob{}
+	persistence.DB.Delete(&jobs, paramMap["ids"])
+	c.JSON(http.StatusOK, common.ResultMsg("删除成功"))
 }

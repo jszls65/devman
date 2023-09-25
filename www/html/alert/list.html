@@ -23,21 +23,21 @@
 
     <div class="layui-inline layui-col-md3">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-filter="formDemo" onclick="search();">搜索</button>
+            <button class="layui-btn" onclick="search();">搜索</button>
             <button class="layui-btn layui-btn-primary" onclick="clearForm()">重置</button>
         </div>
     </div>
 </div>
 
 <!--数据表-->
-<table id="alertlist" lay-filter="test"></table>
+<table id="alertlist" lay-filter="test" lay-data="{id: 'alertTableId'}"></table>
 
 
 <!--工具栏模板：-->
 <script type="text/html" id="tableToolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="add" onclick="loadAdd()">添加</button>
-        <button class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete" onclick="delRow()">删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
     </div>
 </script>
