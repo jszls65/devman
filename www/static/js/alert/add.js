@@ -17,22 +17,31 @@ layui.use(['form'], function () {
            return false;
         }
         submitting = true;
-        console.log(data) //当前容器的全部表单字段，名值对形式：{name: value};获取单个值 data.field["title"]
-        $.post(
-            "/alert/add",
-            {
+        $.ajax({
+            type: 'POST',
+            url: "/alert/add",
+            data: JSON.stringify({
+                "id": data.field["id"] == '' || data.field["id"] == '0' ? 0 : Number(data.field["id"]) ,
                 "appName": data.field["app_name"],
                 "httpMethod": data.field["http_method"],
                 "url": data.field["url"],
                 "owner": data.field["owner"],
                 "state": data.field["state"] == 'on' ? 1 : 0,
                 "type": 'alive'
+            }),
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            success: function (data) {
+                layer.msg(data.msg)
+                search();
             },
-            function (data) {
-                layer.msg("提交成功")
+            error: function (data) {
+                layer.msg(data.responseJSON.msg)
+            },
+            complete: function (){
                 submitting = false;
             }
-        );
+        });
 
         return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
     });

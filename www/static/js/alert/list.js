@@ -17,10 +17,13 @@ function dataTableInit(){
                 ,{field: 'id', title: 'ID', width:80, sort: true}
                 ,{field: 'app_name', title: '服务名称', width:90}
                 ,{field: 'http_method', title: '方法', width:80, sort: false}
-                ,{field: 'owner', title: '负责人', width:80}
                 ,{field: 'url', title: '请求', width: 250}
                 ,{field: 'fail_num', title: '失败次数', width: 90, sort: false}
                 ,{field: 'call_num', title: '调用次数', width: 90, sort: false}
+                ,{field: 'owner', title: '负责人', width:80}
+                ,{field: 'state', title: '状态', width:80, templet:function(){
+                    return '<input type="checkbox" checked="" name="open" lay-skin="switch" lay-filter="switchTest" title="" disabled>';
+                    }}
                 ,{field: 'create_time', title: '创建日期', width: 180, sort: false}
                 ,{field: 'update_time', title: '更新日期', width: 180}
                 ,{field: '', title: '操作', width: 80}
@@ -96,5 +99,33 @@ function delRow(){
         });
     }, function (){
         // 取消
+    });
+}
+
+
+
+// 删除
+function loadEdit(){
+    var checkStatus = table.checkStatus('alertTableId');
+    if (checkStatus.data.length == 0) {
+        layer.msg("请选择要删除的行")
+        return
+    }
+    var ids = []
+    checkStatus.data.forEach(function(i){
+        ids.push(i.id)
+    })
+    if(ids.length != 1){
+        layer.msg("只能选中一条记录编辑");
+        return;
+    }
+
+    $.get('/alert/load-edit?id='+ids[0], {}, function(str){
+        layer.open({
+            type: 1
+            ,title: "添加"
+            ,area: ['700px', '450px']
+            ,content: str //注意，如果str是object，那么需要字符拼接。
+        });
     });
 }

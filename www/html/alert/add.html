@@ -2,19 +2,27 @@
 <html>
 {{ template "common/page_head.html" . }}
 <body>
+
 <form class="layui-form" style="padding: 10px 30px 0 0"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+  <!--隐藏域-->
+  <input type="hidden" name="id" value="{{.data.ID}}"/>
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">服务名称</label>
+      <label class="layui-form-label">服务名称 </label>
       <div class="layui-input-inline">
-        <input type="text" name="app_name" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input"/>
+        <input type="text" name="app_name" lay-verify="required" placeholder="请输入" autocomplete="off"
+               class="layui-input" value="{{ .data.AppName }}" />
       </div>
     </div>
 
     <div class="layui-inline">
       <label class="layui-form-label">状态</label>
       <div class="layui-input-inline">
-        <input type="checkbox" lay-skin="switch" checked name="state"/>
+        <input type="checkbox" lay-skin="switch"
+               {{ if eq .data.State 1}}
+               checked
+               {{end}}
+               name="state"/>
       </div>
     </div>
 
@@ -32,7 +40,7 @@
     <div class="layui-inline">
       <label class="layui-form-label">负责人</label>
       <div class="layui-input-inline">
-        <input type="text"  name="owner" placeholder="请输入" lay-verify="required"  autocomplete="off" class="layui-input"/>
+        <input type="text"  name="owner" placeholder="请输入" lay-verify="required" value="{{.data.Owner}}"  autocomplete="off" class="layui-input"/>
       </div>
     </div>
   </div>
@@ -41,7 +49,7 @@
 
       <label class="layui-form-label">URL</label>
       <div class="layui-input-block">
-        <input type="text" id="alertUrl" name="url" placeholder="请输入" lay-verify="required" autocomplete="off" class="layui-input"/>
+        <input type="text" id="alertUrl" name="url" value="{{.data.URL}}" placeholder="请输入" lay-verify="required" autocomplete="off" class="layui-input"/>
       </div>
 
   </div>

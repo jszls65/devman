@@ -3,6 +3,7 @@
 package structs
 
 type AlertCreateReq struct {
+	Id         int32  `form:"id"`
 	AppName    string `form:"appName"`
 	HttpMethod string `form:"httpMethod"`
 	Url        string `form:"url"`
