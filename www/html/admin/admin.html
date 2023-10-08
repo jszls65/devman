@@ -12,19 +12,9 @@
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
 
-            <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">nav groups</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">menu 11</a></dd>
-                    <dd><a href="">menu 22</a></dd>
-                    <dd><a href="">menu 33</a></dd>
-                </dl>
-            </li>
+            <li class="layui-nav-item layui-hide-xs"><a href="">管理后台</a></li>
         </ul>
-        <ul class="layui-nav layui-layout-right">
+        <!--<ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
                 <a href="javascript:;">
                     <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" class="layui-nav-img">
@@ -41,7 +31,7 @@
                     <i class="layui-icon layui-icon-more-vertical"></i>
                 </a>
             </li>
-        </ul>
+        </ul>-->
     </div>
 
     <div class="layui-side layui-bg-black">
@@ -49,10 +39,9 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">监控</a>
+                    <a class="" href="javascript:;">任务</a>
                     <dl class="layui-nav-child">
-                        <dd id="alertTest"><a href="javascript:;" onclick="loadAlertList('dev')">测试</a></dd>
-                        <dd><a href="javascript:;">生产</a></dd>
+                        <dd id="alertTest"><a href="javascript:;" onclick="loadAlertList('dev')">监控</a></dd>
                     </dl>
                 </li>
 
@@ -69,7 +58,6 @@
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        底部固定区域
     </div>
 </div>
 <script>

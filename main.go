@@ -4,9 +4,10 @@ import (
 	"dev-utils/config"
 	_ "dev-utils/src/job"
 	"dev-utils/src/routers"
-	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {

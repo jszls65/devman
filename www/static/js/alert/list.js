@@ -9,7 +9,7 @@ function dataTableInit(){
             elem: '#alertlist'
             ,id: 'alertTableId'
             ,toolbar: "#tableToolbar"
-            ,height: 530
+            ,height: 516
             ,url: '/alert/list?env='+$('#env').val() //数据接口
             ,page: true //开启分页
             ,cols: [[ //表头
@@ -21,12 +21,16 @@ function dataTableInit(){
                 ,{field: 'fail_num', title: '失败次数', width: 90, sort: false}
                 ,{field: 'call_num', title: '调用次数', width: 90, sort: false}
                 ,{field: 'owner', title: '负责人', width:80}
-                ,{field: 'state', title: '状态', width:80, templet:function(){
-                    return '<input type="checkbox" checked="" name="open" lay-skin="switch" lay-filter="switchTest" title="" disabled>';
-                    }}
-                ,{field: 'create_time', title: '创建日期', width: 180, sort: false}
-                ,{field: 'update_time', title: '更新日期', width: 180}
-                ,{field: '', title: '操作', width: 80}
+                ,{field: 'state', title: '状态', width:80, templet:function(row, data){
+                    paramStr = "id="+row.id;
+                    if(row.state == 0){
+                        return '<input type="checkbox" paramStr="'+paramStr+'" name="open" lay-skin="switch" lay-filter="switchTest" title="">';
+                    }else{
+                        return '<input type="checkbox" paramStr="'+paramStr+'" checked name="open" lay-skin="switch" lay-filter="switchTest" title="">';
+                    }
+                }}
+                ,{field: 'create_time', title: '创建日期', width: 160, sort: false}
+                ,{field: 'update_time', title: '更新日期', width: 160}
             ]]
         });
     });
@@ -65,11 +69,6 @@ function loadAdd(){
     });
 }
 
-function testUrl(){
-    var url = $('#alertUrl').val() || "";
-    var method = $('#alertMethod').val() || "";
-
-}
 
 // 删除
 function delRow(){
@@ -123,9 +122,23 @@ function loadEdit(){
     $.get('/alert/load-edit?id='+ids[0], {}, function(str){
         layer.open({
             type: 1
-            ,title: "添加"
+            ,title: "编辑"
             ,area: ['700px', '450px']
             ,content: str //注意，如果str是object，那么需要字符拼接。
         });
     });
 }
+
+layui.use(['form'], function () {
+    layui.form.on('switch(switchTest)', function(data){
+        layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+        });
+        var paramStr = this.getAttribute("paramStr");
+        var state = this.checked ? 1 : 0;
+        $.get('/alert/update-state?'+ paramStr+"&state="+state, {}, function(str){
+            layer.msg(str.msg)
+            search()
+        });
+    });
+
+})

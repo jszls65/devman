@@ -45,6 +45,35 @@ CREATE table `alert_job`(
     `update_time` datetime not null  -- 更新时间
 );
 
+-- 新增字段 alert_job
+-- 1. 重命名表
+alter  table alert_job rename to alert_job_bak;
+-- 2. 创建新表
+CREATE TABLE `alert_job`(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `app_name` text not null default '',  -- 服务名称
+    `type` text not null default '',  -- 类型: alive-存活, data-数据校验, autotest-自动化测试
+    `http_method` text not null default '',  -- get post
+    `url` text not null default '',  -- 请求的url
+    `head` text not null default '', -- head
+    `body` text not null default '', -- body
+    `owner` text not null default '',  -- 负责人
+    `phone` text not null default '',  -- 负责人手机号
+    `exe_cycle` integer not null default 30, -- 执行周期, 每多少秒.
+    `last_exe_time` datetime null , -- 上次执行时间.
+    `last_exe_result` integer not null default 1, -- 上次执行结果 0-失败 1-成功
+    `in_fail_num` integer not null default 0, -- 连续失败次数, 成功会被改成0
+    `fail_num` INTEGER not null default 0,  -- 失败次数
+    `call_num` INTEGER not null default 0,  -- 调用总次数
+    `state` integer not null default 1, -- 状态 0-停止 1-运行
+    `note` text not null default '', -- 备注
+    create_time datetime not null,  -- 创建时间
+    update_time datetime not null  -- 更新时间
+);
+-- 3. 复制备份表中数据
+insert into alert_job (id,app_name,"type",http_method,url,owner,phone,exe_cycle,last_exe_time,last_exe_result,in_fail_num,fail_num,call_num,state,create_time,update_time)
+select * from alert_job_bak;
+
 
 -- 接口调用日志表
 drop table if exists `alert_log`;

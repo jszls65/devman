@@ -16,5 +16,6 @@ func AlertRoutersInit(g *gin.Engine) {
 	group.GET("/list", controllers.AlertController{}.GetAlertList)
 	group.POST("/add", controllers.AlertController{}.Add)
 	group.POST("/del", controllers.AlertController{}.Del)
+	group.GET("/update-state", controllers.AlertController{}.UpdateState)
 
 }

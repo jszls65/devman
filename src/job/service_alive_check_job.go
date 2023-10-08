@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -21,70 +22,89 @@ type ServiceAliveCheck struct {
 }
 
 func (sa *ServiceAliveCheck) Run() {
+	if !config.Conf.Job.Enable {
+		log.Println("job enable=false, 任务停止")
+		return
+	}
+
 	db := persistence.DB
-	interfaceConfigList := []*models.AlertJob{}
-	db.Where("type = ?", "alive").Find(&interfaceConfigList)
+	var interfaceConfigList []*models.AlertJob
+	db.Where("type = ? and state = 1", "alive").Find(&interfaceConfigList)
 	if len(interfaceConfigList) == 0 {
 		log.Println("无接口配置数据")
 		return
 	}
 	for _, interfaceConfig := range interfaceConfigList {
 		go sa.doJobsItem(interfaceConfig, db)
-		time.Sleep(200 * time.Millisecond)
 	}
 
 }
 
-func (sa *ServiceAliveCheck) doJobsItem(interfaceConfig *models.AlertJob, db *gorm.DB) {
+func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) {
 	startTime := time.Now()
-	httpResult, _ := sa.httpClient(interfaceConfig.HTTPMethod, interfaceConfig.URL)
+	var httpResult int32
+	if alertJob.HTTPMethod == "GET" {
+		httpResult = sa.httpGet(alertJob.HTTPMethod, alertJob.URL)
+	} else {
+		httpResult = sa.httpPost(alertJob.HTTPMethod, alertJob.URL, alertJob.Head, alertJob.Body)
+	}
 	log.Println("请求接口是否成功: ", httpResult)
 	endTime := time.Now()
 	// 计算耗时
 	apiDuration := endTime.Sub(startTime)
 
-	lastFailTime, exists := lastFailTimeMap[interfaceConfig.AppName]
+	lastFailTime, exists := lastFailTimeMap[alertJob.AppName]
 	if httpResult == constants.ResultFail { // 请求失败
-		interfaceConfig.FailNum += 1 // 失败次数+1
+		alertJob.FailNum += 1 // 失败次数+1
 		if !exists {
-			lastFailTimeMap[interfaceConfig.AppName] = time.Now()
+			lastFailTimeMap[alertJob.AppName] = time.Now()
 		} else {
 			// 计算失败时间差
 			failDuration := time.Now().Sub(lastFailTime)
 			if failDuration.Minutes() >= config.Conf.DingTalk.AlertDuration {
 
-				dingTalkMsg := fmt.Sprintf("服务告警: [%s]服务没有响应, 请检查 ! ", interfaceConfig.AppName)
-				log.Println("发送钉钉消息: ", dingTalkMsg)
+				dingTalkMsg := fmt.Sprintf("服务告警: [%s]服务没有响应, 请检查 ! ", alertJob.AppName)
+
 				dingtalk.SendText(dingTalkMsg)
-				lastFailTimeMap[interfaceConfig.AppName] = time.Now().Add(config.Conf.DingTalk.NextDuration * time.Minute) // 出现告警后, 10分钟再检查.
+				lastFailTimeMap[alertJob.AppName] = time.Now().Add(config.Conf.DingTalk.NextDuration * time.Minute) // 出现告警后, 10分钟再检查.
 			}
 		}
 	} else { // 请求成功
 		if exists {
-			delete(lastFailTimeMap, interfaceConfig.AppName)
+			delete(lastFailTimeMap, alertJob.AppName)
 		}
 	}
-	interfaceConfig.CallNum += 1            // 总次数+1
-	interfaceConfig.UpdateTime = time.Now() // 记录更新时间
+	alertJob.CallNum += 1            // 总次数+1
+	alertJob.UpdateTime = time.Now() // 记录更新时间
 	// 更新配置表数据
-	db.Where("id = ?", interfaceConfig.ID).Updates(models.AlertJob{CallNum: interfaceConfig.CallNum, UpdateTime: interfaceConfig.UpdateTime})
+	db.Where("id = ?", alertJob.ID).Updates(models.AlertJob{CallNum: alertJob.CallNum, UpdateTime: alertJob.UpdateTime,
+		FailNum: alertJob.FailNum})
 	// 保存日志
-	logItem := &models.AlertLog{AlertJobsID: interfaceConfig.ID, Result: httpResult, CostTime: int32(apiDuration.Milliseconds()), CreateTime: time.Now(), UpdateTime: time.Now()}
+	logItem := &models.AlertLog{AlertJobsID: alertJob.ID, Result: httpResult, CostTime: int32(apiDuration.Milliseconds()), CreateTime: time.Now(), UpdateTime: time.Now()}
 	db.Create(logItem)
 }
 
-// 发送http请求
-func (sa *ServiceAliveCheck) httpClient(method string, url string) (int32, error) {
-	req, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return constants.ResultFail, err
+func (sa *ServiceAliveCheck) httpGet(method string, url string) int32 {
+	client := http.Client{
+		Timeout: 30 * time.Second,
 	}
-	req.Header.Add("Content-Type", "application/json")
-	//req.Header.Add("Authorization", "Bearer ")
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Get(url)
 	if err != nil || resp.StatusCode != 200 {
-		return constants.ResultFail, err
+		return constants.ResultFail
 	}
 	defer resp.Body.Close()
-	return constants.ResultOK, nil
+	return constants.ResultOK
+}
+
+func (sa *ServiceAliveCheck) httpPost(method string, url string, head string, body string) int32 {
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+	client.Head("")
+	resp, err := client.Post(url, "application/json", strings.NewReader(body))
+	if err != nil || resp.StatusCode != 200 {
+		return constants.ResultFail
+	}
+	defer resp.Body.Close()
+	return constants.ResultOK
 }

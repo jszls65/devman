@@ -45,10 +45,12 @@ type DingTalk struct {
 	Url           string        `mapstructure:"url"`
 	AlertDuration float64       `mapstructure:"alert_duration"`
 	NextDuration  time.Duration `mapstructure:"next_duration"`
+	Enable        bool          `mapstructure:"enable"`
 }
 
 type Job struct {
-	Enable bool `mapstructure:"enable"`
+	Enable     bool   `mapstructure:"enable"`
+	AliveCheck string `mapstructure:"alive_check"`
 }
 
 type LibraryConfig struct {
@@ -63,25 +65,17 @@ type LibraryConfig struct {
 }
 
 func init() {
-	var configPath string
+	//var configPath string
 
 	viper.SetConfigFile("./config/boot.yml")
 	err := viper.ReadInConfig() // 读取配置文件
 	if err != nil {
 		panic(fmt.Errorf("配置文件读取失败: %s", err))
 	}
-	configEnv := viper.GetString("env")
-
-	// configEnv := os.Getenv("GO_ENV")
-	switch configEnv {
-	case "dev":
-		configPath = "./config/config-dev.yml"
-	case "test":
-		configPath = "./config/config-test.yml"
-	case "prod":
-		configPath = "./config/config-prod.yml"
-	default:
-		panic("环境变量 GO_ENV 设置错误, 请使用 , 有效值: dev|test|prod, 当前值: " + configEnv)
+	env := viper.GetString("env")
+	configPath, ok := getEnvConfigMap(env)
+	if !ok {
+		panic("环境变量 GO_ENV 设置错误, 请使用 , 有效值: dev|test|prod, 当前值: " + env)
 	}
 	log.Println("当前加载的配置文件是: ", configPath)
 
@@ -106,4 +100,16 @@ func init() {
 	if err1 := viper.Unmarshal(&Conf); err1 != nil {
 		panic(fmt.Errorf("unmarshal data to Conf failed,err:%v", err))
 	}
+}
+
+var envMap = make(map[string]string)
+
+func getEnvConfigMap(key string) (string, bool) {
+	if len(envMap) == 0 {
+		envMap["dev"] = "./config/config-dev.yml"
+		envMap["test"] = "./config/config-test.yml"
+		envMap["prod"] = "./config/config-prod.yml"
+	}
+	val, ok := envMap[key]
+	return val, ok
 }

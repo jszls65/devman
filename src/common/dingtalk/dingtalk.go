@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"dev-utils/config"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -17,6 +18,11 @@ type Message struct {
 }
 
 func SendText(content string) {
+	log.Println("发送钉钉消息: ", content)
+	if !config.Conf.DingTalk.Enable {
+		log.Println("钉钉消息未打开, 消息无法发送")
+		return
+	}
 	msg := Message{
 		Type: "text",
 		Text: struct {

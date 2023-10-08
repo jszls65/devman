@@ -5,7 +5,7 @@
 
 <form class="layui-form" style="padding: 10px 30px 0 0"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
   <!--隐藏域-->
-  <input type="hidden" name="id" value="{{.data.ID}}"/>
+  <input type="hidden" name="id" id="id" value="{{.data.ID}}"/>
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">服务名称 </label>
@@ -22,6 +22,10 @@
                {{ if eq .data.State 1}}
                checked
                {{end}}
+
+               {{ if eq .data.ID 0}}
+               checked
+               {{end}}
                name="state"/>
       </div>
     </div>
@@ -32,8 +36,8 @@
     <div class="layui-inline">
       <label class="layui-form-label">方法</label>
       <div class="layui-input-inline">
-        <input type="radio" name="http_method" value="GET" title="GET" checked>
-        <input type="radio" name="http_method" value="POST" disabled="" title="POST">
+        <input type="radio" name="http_method" value="GET" title="GET"  {{if eq .data.HTTPMethod "GET"}} checked {{end}} >
+        <input type="radio" name="http_method" value="POST" title="POST" {{if eq .data.HTTPMethod "POST"}} checked {{end}}>
       </div>
     </div>
 
@@ -46,19 +50,29 @@
   </div>
 
   <div class="layui-form-item">
-
       <label class="layui-form-label">URL</label>
       <div class="layui-input-block">
         <input type="text" id="alertUrl" name="url" value="{{.data.URL}}" placeholder="请输入" lay-verify="required" autocomplete="off" class="layui-input"/>
       </div>
-
+  </div>
+  <div class="layui-form-item">
+      <label class="layui-form-label">Body</label>
+      <div class="layui-input-block">
+        <input type="text"  name="body" value="{{.data.Body}}" placeholder="请输入" lay-verify="" autocomplete="off" class="layui-input"/>
+      </div>
+  </div>
+  <div class="layui-form-item">
+      <label class="layui-form-label">备注</label>
+      <div class="layui-input-block">
+        <textarea placeholder="请输入内容"  name="note" class="layui-textarea">{{.data.Note}}</textarea>
+      </div>
   </div>
 
   <div class="layui-form-item">
     <div class="layui-input-block">  <!-- onclick="submitAlertAdd();"-->
-      <button class="layui-btn" lay-submit lay-filter="formDemo" >提交</button>
-      <button class="layui-btn" onclick="testUrl()">测试</button>
-      <button class="layui-btn" onclick="closeDialog()">关闭</button>
+      <button class="layui-btn" lay-submit lay-filter="formDemo" id="submitBtn">提交</button>
+      <a class="layui-btn" type="button" onclick="copyData();">复制</a>
+      <a class="layui-btn" type="button" onclick="closeDialog()">关闭</a>
     </div>
   </div>
   <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->

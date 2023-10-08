@@ -9,4 +9,6 @@ type AlertCreateReq struct {
 	Url        string `form:"url"`
 	Owner      string `form:"owner"`
 	State      int32  `form:"state"`
+	Body       string `form:"body"`
+	Note       string `form:"note"`
 }
