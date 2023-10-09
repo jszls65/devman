@@ -44,11 +44,10 @@ func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) 
 	startTime := time.Now()
 	var httpResult int32
 	if alertJob.HTTPMethod == "GET" {
-		httpResult = sa.httpGet(alertJob.HTTPMethod, alertJob.URL)
+		httpResult = sa.httpGet(alertJob.URL)
 	} else {
-		httpResult = sa.httpPost(alertJob.HTTPMethod, alertJob.URL, alertJob.Head, alertJob.Body)
+		httpResult = sa.httpPost(alertJob.URL, alertJob.Body)
 	}
-	log.Println("请求接口是否成功: ", httpResult)
 	endTime := time.Now()
 	// 计算耗时
 	apiDuration := endTime.Sub(startTime)
@@ -84,7 +83,7 @@ func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) 
 	db.Create(logItem)
 }
 
-func (sa *ServiceAliveCheck) httpGet(method string, url string) int32 {
+func (sa *ServiceAliveCheck) httpGet(url string) int32 {
 	client := http.Client{
 		Timeout: 30 * time.Second,
 	}
@@ -96,7 +95,7 @@ func (sa *ServiceAliveCheck) httpGet(method string, url string) int32 {
 	return constants.ResultOK
 }
 
-func (sa *ServiceAliveCheck) httpPost(method string, url string, head string, body string) int32 {
+func (sa *ServiceAliveCheck) httpPost(url string, body string) int32 {
 	client := http.Client{
 		Timeout: 30 * time.Second,
 	}
