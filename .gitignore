@@ -26,4 +26,5 @@ go.sum
 
 dev-utils.db
 dev-utils
-
+deploy.sh
+alertman.zip
