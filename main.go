@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	//func main4() {
 	g := gin.Default()
 	// html
 	g.LoadHTMLGlob("./www/html/**/*")

@@ -64,7 +64,7 @@ func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) 
 
 				dingTalkMsg := fmt.Sprintf("服务告警: [%s]服务没有响应, 请检查 ! ", alertJob.AppName)
 
-				dingtalk.SendText(dingTalkMsg)
+				dingtalk.SendText(dingTalkMsg, alertJob.Phone)
 				lastFailTimeMap[alertJob.AppName] = time.Now().Add(config.Conf.DingTalk.NextDuration * time.Minute) // 出现告警后, 10分钟再检查.
 			}
 		}
