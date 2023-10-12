@@ -29,7 +29,7 @@ func (s RequestLogController) Save(c *gin.Context) {
 		CreateTime: time.Now(),
 	}
 	db.Create(&reqLog)
-	c.JSON(200, common.ResultMsg("操作成功"))
+	c.JSON(200, common.ResultOkMsg("操作成功"))
 }
 
 // 查询统计数据

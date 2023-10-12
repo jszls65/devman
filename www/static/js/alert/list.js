@@ -58,17 +58,18 @@ function clearForm(){
     search();
 }
 
+// 打开添加弹窗
+var addLayerId;
 function loadAdd(){
     $.get('/alert/load-add', {}, function(str){
-        layer.open({
-            type: 1
-            ,title: "添加"
-            ,area: ['700px', '550px']
-            ,content: str //注意，如果str是object，那么需要字符拼接。
-        });
+        openAddLayer('添加',str);
     });
 }
 
+function closeAddLayer(){
+    search();
+    layer.close(addLayerId);
+}
 
 // 删除
 function delRow(){
@@ -103,7 +104,7 @@ function delRow(){
 
 
 
-// 删除
+// 编辑
 function loadEdit(){
     var checkStatus = table.checkStatus('alertTableId');
     if (checkStatus.data.length == 0) {
@@ -120,12 +121,7 @@ function loadEdit(){
     }
 
     $.get('/alert/load-edit?id='+ids[0], {}, function(str){
-        layer.open({
-            type: 1
-            ,title: "编辑"
-            ,area: ['700px', '450px']
-            ,content: str //注意，如果str是object，那么需要字符拼接。
-        });
+        openAddLayer('编辑',str);
     });
 }
 
@@ -142,3 +138,16 @@ layui.use(['form'], function () {
     });
 
 })
+
+function openAddLayer(title, str){
+    addLayerId = layer.open({
+        type: 1
+        , title: title
+        /*, area: ['700px', '450px']*/
+        , offset: 'auto'
+        , shade: 0.6 // 遮罩透明度
+        , shadeClose: false
+        , maxmin: true
+        , content: str //注意，如果str是object，那么需要字符拼接。
+    });
+}

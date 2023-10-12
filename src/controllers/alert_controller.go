@@ -43,7 +43,7 @@ func (ic AlertController) GetAlertList(c *gin.Context) {
 	//var req structs.AlertQueryReq
 	err := c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, common.ResultMsg("参数不正确"))
+		c.JSON(http.StatusBadRequest, common.ResultMsg(1, "参数不正确"))
 		return
 	}
 
@@ -76,11 +76,11 @@ func (ac AlertController) Add(c *gin.Context) {
 	c.ShouldBind(&req)
 	// 校验服务名称或url不能重复
 	if checkStr := ac.checkAppName(req); checkStr != "" {
-		c.JSON(http.StatusInternalServerError, common.ResultMsg(checkStr))
+		c.JSON(http.StatusOK, common.ResultMsg(1, checkStr))
 		return
 	}
 	if checkStr := ac.checkUrl(req); checkStr != "" {
-		c.JSON(http.StatusInternalServerError, common.ResultMsg(checkStr))
+		c.JSON(http.StatusOK, common.ResultMsg(1, checkStr))
 		return
 	}
 
@@ -98,7 +98,7 @@ func (ac AlertController) Add(c *gin.Context) {
 		persistence.DB.Exec("UPDATE alert_job SET app_name = ?, owner = ?, state = ?, http_method = ?, url = ?, update_time = ?, note=?, body=? , phone=? WHERE id = ?", req.AppName, req.Owner, req.State, req.HttpMethod, req.Url, time.Now(), req.Note, req.Body, req.Phone, req.Id)
 		msg = "编辑成功"
 	}
-	c.JSON(http.StatusOK, common.ResultMsg(msg))
+	c.JSON(http.StatusOK, common.ResultMsg(1, msg))
 }
 
 func (ac AlertController) checkUrl(req *structs.AlertCreateReq) string {
@@ -135,7 +135,7 @@ func (ac AlertController) checkAppName(req *structs.AlertCreateReq) string {
 func (ac AlertController) Del(c *gin.Context) {
 	data, err := c.GetRawData()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, common.ResultMsg("参数异常"))
+		c.JSON(http.StatusInternalServerError, common.ResultMsg(1, "参数异常"))
 		return
 	}
 	paramMap := make(map[string][]int, 0)
@@ -143,19 +143,19 @@ func (ac AlertController) Del(c *gin.Context) {
 
 	jobs := []models.AlertJob{}
 	persistence.DB.Delete(&jobs, paramMap["ids"])
-	c.JSON(http.StatusOK, common.ResultMsg("删除成功"))
+	c.JSON(http.StatusOK, common.ResultMsg(1, "删除成功"))
 }
 
 // 更新状态
 func (ac AlertController) UpdateState(context *gin.Context) {
 	id, exists := context.GetQuery("id")
 	if !exists {
-		context.JSON(http.StatusBadRequest, common.ResultMsg("id不能为空"))
+		context.JSON(http.StatusBadRequest, common.ResultMsg(1, "id不能为空"))
 	}
 	state, exists := context.GetQuery("state")
 	if !exists {
-		context.JSON(http.StatusBadRequest, common.ResultMsg("state不能为空"))
+		context.JSON(http.StatusBadRequest, common.ResultMsg(1, "state不能为空"))
 	}
 	persistence.DB.Exec("update alert_job set state=? where id=?", state, id)
-	context.JSON(http.StatusOK, common.ResultMsg("状态更新成功"))
+	context.JSON(http.StatusOK, common.ResultOkMsg("状态更新成功"))
 }

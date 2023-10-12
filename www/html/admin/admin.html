@@ -58,6 +58,7 @@
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
+        {{template "common/page_footer.html" .}}
     </div>
 </div>
 <script>
@@ -87,7 +88,9 @@
         });
 
     });
-
+    // 获取请求次数
+    getRequestCount()
+    // 打开默认菜单
     menuFunc('监控', 'menuFuncAlert')
 </script>
 </body>

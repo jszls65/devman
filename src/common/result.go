@@ -4,15 +4,10 @@ package common
 
 import "github.com/gin-gonic/gin"
 
-func Result(msg string, data any) gin.H {
+// code 0-成功  非0 失败
+func ResultMsg(code int, msg string) gin.H {
 	return gin.H{
-		"msg":  msg,
-		"data": data,
-	}
-}
-
-func ResultMsg(msg string) gin.H {
-	return gin.H{
+		"code": code,
 		"msg":  msg,
 		"data": nil,
 	}
@@ -20,14 +15,24 @@ func ResultMsg(msg string) gin.H {
 
 func ResultOk() gin.H {
 	return gin.H{
+		"code": 0,
 		"msg":  "操作成功",
 		"data": nil,
 	}
 }
 
-func ResultFail() gin.H {
+func ResultOkMsg(msg string) gin.H {
 	return gin.H{
-		"msg":  "操作失败",
+		"code": 0,
+		"msg":  msg,
+		"data": nil,
+	}
+}
+
+func ResultFail(msg string) gin.H {
+	return gin.H{
+		"code": 1,
+		"msg":  msg,
 		"data": nil,
 	}
 }

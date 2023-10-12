@@ -12,13 +12,15 @@
 body{
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 }
 
 .bodyDiv{
     display: flex;
     justify-content: space-around;
-    min-height: 91%;
+    min-height: 90%;
     height: auto !important;
+    margin-top: 10px;
 }
 .bodyDiv div{
     height: 400px;
@@ -45,10 +47,11 @@ body{
 }
 #inputContent{
     border: 1px solid #1B9AF7;
-    height: 36px;
+    height: 44px;
     width: 240px;
     padding-left: 10px;
-    margin-left: 5px;
+    margin-right: 10px;
+    margin-left: -2px;
 }
 
 #rightContent{
