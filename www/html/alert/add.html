@@ -36,8 +36,8 @@
     <div class="layui-inline">
       <label class="layui-form-label">方法</label>
       <div class="layui-input-inline">
-        <input type="radio" name="http_method" value="GET" title="GET"  {{if eq .data.HTTPMethod "GET"}} checked {{end}} >
-        <input type="radio" name="http_method" value="POST" title="POST" {{if eq .data.HTTPMethod "POST"}} checked {{end}}>
+        <input type="radio" name="http_method" lay-filter="method_radio_filter" value="GET" title="GET"  {{if eq .data.HTTPMethod "GET"}} checked {{end}} >
+        <input type="radio" name="http_method" lay-filter="method_radio_filter" value="POST" title="POST" {{if eq .data.HTTPMethod "POST"}} checked {{end}}>
       </div>
     </div>
 
@@ -50,16 +50,43 @@
   </div>
 
   <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">手机号</label>
+      <div class="layui-input-inline">
+        <input type="text" id="phone" name="phone" value="{{.data.Phone}}" placeholder="通过钉钉群机器人通知" lay-verify=""
+               autocomplete="off" class="layui-input"/>
+      </div>
+    </div>
+
+    <div class="layui-inline">
+      <label class="layui-form-label">邮箱</label>
+      <div class="layui-input-inline">
+        <input type="text" id="email" name="email"  placeholder="通过邮件通知" lay-verify=""
+               autocomplete="off" class="layui-input"/>
+      </div>
+    </div>
+
+  </div>
+  <div class="layui-form-item">
       <label class="layui-form-label">URL</label>
       <div class="layui-input-block">
         <input type="text" id="alertUrl" name="url" value="{{.data.URL}}" placeholder="请输入" lay-verify="required" autocomplete="off" class="layui-input"/>
       </div>
   </div>
-  <div class="layui-form-item">
+  <div class="layui-form-item" id="postContent" style="display: none;">
+    <div class="layui-inline">
       <label class="layui-form-label">Body</label>
-      <div class="layui-input-block">
+      <div class="layui-input-inline">
         <input type="text"  name="body" value="{{.data.Body}}" placeholder="请输入" lay-verify="" autocomplete="off" class="layui-input"/>
       </div>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">Head</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="head" placeholder="请输入" lay-verify="" autocomplete="off" class="layui-input"/>
+      </div>
+    </div>
+
   </div>
   <div class="layui-form-item">
       <label class="layui-form-label">备注</label>

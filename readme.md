@@ -53,27 +53,27 @@ Merge Requst
 
 ``` shell
 ├── config  // 多环境配置文件
-│   ├── boot.yml
-│   ├── config-dev.yml
-│   ├── config-prod.yml
-│   ├── config-test.yml
-│   └── config.go
+│   ├── boot.yml
+│   ├── config-dev.yml
+│   ├── config-prod.yml
+│   ├── config-test.yml
+│   └── config.go
 ├── main.go // 程序入口
 ├── script // 脚本文件
 ├── src  // 后端代码
-│   ├── common
-│   ├── controllers // 控制层(mvc)结构
-│   ├── middlewares // 中间件
-│   ├── persistence  // 持久化层
-│   │   ├── dbconn.go
-│   │   └── model
-│   ├── routers // 路由
+│   ├── common
+│   ├── controllers // 控制层(mvc)结构
+│   ├── middlewares // 中间件
+│   ├── persistence  // 持久化层
+│   │   ├── dbconn.go
+│   │   └── model
+│   ├── routers // 路由
 └── www // 前端代码
     ├── html  // 模板文件
-    │   ├── common
-    │   │   └── page_footer.html
-    │   └── index
-    │       └── index.html
+    │   ├── common
+    │   │   └── page_footer.html
+    │   └── index
+    │       └── index.html
     └── static  // 静态资源
         ├── css
         ├── img
@@ -103,12 +103,35 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 nohup ./dev-utils &
 ```
 
-启动成功后, 访问`http://localhost:8559/tool`
+deploy.sh
+```shell
+# 部署脚本
+# 将配置改成生产标识
+echo "env: prod" > ./config/boot.yml
+# 打包linux可执行文件 
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+# 压缩打包
+zip alertman -r config www dev-utils start.sh stop.sh
+# 改回配置.
+echo "env: dev" > ./config/boot.yml
+go build
+
+```
+
+```shell
+# 将zip包上传至服务器解压, 
+# 在服务器上执行如下命令
+nohup ./dev-utils &
+```
+
+
+启动成功后, 访问`http://localhost:8559/admin`
 
 # TODO
 
 - [ ] 新增编辑支持添加手机号
 - [ ] 列表添加上次告警时间, 时间格式社交化处理
+- [ ] 加入 nacos 服务在线巡检功能
 - [ ] 集成 tool 页面
 - [ ] 支持多 tab 多页面
 - [x] 钉钉消息支持@负责人 2023-10-10

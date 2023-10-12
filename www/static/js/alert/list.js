@@ -63,7 +63,7 @@ function loadAdd(){
         layer.open({
             type: 1
             ,title: "添加"
-            ,area: ['700px', '450px']
+            ,area: ['700px', '550px']
             ,content: str //注意，如果str是object，那么需要字符拼接。
         });
     });

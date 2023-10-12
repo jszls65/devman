@@ -4,7 +4,7 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">Eskimo</div>
+        <div class="layui-logo layui-hide-xs layui-bg-black">Alertman</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <!-- 移动端显示 -->
@@ -12,7 +12,7 @@
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
 
-            <li class="layui-nav-item layui-hide-xs"><a href="">管理后台</a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="" id="tabTitle">管理后台</a></li>
         </ul>
         <!--<ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
@@ -41,11 +41,11 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">任务</a>
                     <dl class="layui-nav-child">
-                        <dd id="alertTest"><a href="javascript:;" onclick="loadAlertList('dev')">监控</a></dd>
+                        <dd id="alertTest"><a href="javascript:;" onclick="menuFunc('监控', 'menuFuncAlert')">监控</a></dd>
                     </dl>
                 </li>
 
-                <li class="layui-nav-item"><a href="javascript:;">工具</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" onclick="menuFunc('工具', 'menuFuncTool')">工具</a></li>
             </ul>
         </div>
     </div>
@@ -88,7 +88,7 @@
 
     });
 
-    loadAlertList('env');
+    menuFunc('监控', 'menuFuncAlert')
 </script>
 </body>
 </html>

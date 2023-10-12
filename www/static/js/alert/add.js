@@ -49,6 +49,24 @@ layui.use(['form'], function () {
 
         return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
     });
+
+   /* _form.on('submit(method_radio_filter)', function(data){
+        var method = data.field['http_method']
+        if(method == 'POST'){
+            $('#postContent').show();
+        }else{
+            $('#postContent').hide();
+        }
+    });*/
+    _form.on('radio(method_radio_filter)', function (data){
+        var method = data.value
+        if(method == 'POST'){
+            $('#postContent').show();
+        }else{
+            $('#postContent').hide();
+        }
+    });
+
 });
 
 
