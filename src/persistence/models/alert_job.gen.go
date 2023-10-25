@@ -21,12 +21,9 @@ type AlertJob struct {
 	Body          string    `gorm:"column:body;type:TEXT" json:"body"`
 	Owner         string    `gorm:"column:owner;type:TEXT" json:"owner"`
 	Phone         string    `gorm:"column:phone;type:TEXT" json:"phone"`
-	ExeCycle      int32     `gorm:"column:exe_cycle;type:INTEGER" json:"exe_cycle"`
-	LastExeTime   time.Time `gorm:"column:last_exe_time;type:datetime" json:"last_exe_time"`
 	LastExeResult int32     `gorm:"column:last_exe_result;type:INTEGER" json:"last_exe_result"`
-	InFailNum     int32     `gorm:"column:in_fail_num;type:INTEGER" json:"in_fail_num"`
-	FailNum       int32     `gorm:"column:fail_num;type:INTEGER" json:"fail_num"`
-	CallNum       int32     `gorm:"column:call_num;type:INTEGER" json:"call_num"`
+	LastFailTime  time.Time `gorm:"column:last_fail_time;type:datetime" json:"last_fail_time"`
+	HeathState    int32     `gorm:"column:heath_state;type:INTEGER" json:"heath_state"`
 	State         int32     `gorm:"column:state;type:INTEGER" json:"state"`
 	Note          string    `gorm:"column:note;type:TEXT" json:"note"`
 	CreateTime    time.Time `gorm:"column:create_time;type:datetime" json:"create_time"`

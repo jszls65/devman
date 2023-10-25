@@ -12,4 +12,5 @@ type AlertCreateReq struct {
 	Body       string `form:"body"`
 	Note       string `form:"note"`
 	Phone      string `form:"phone"`
+	Type       string `form:"type"`
 }

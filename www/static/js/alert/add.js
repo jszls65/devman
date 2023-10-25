@@ -60,4 +60,5 @@ layui.use(['form'], function () {
 function copyData() {
     $('#id').val(0);
     $('#submitBtn').click();
+    search()
 }

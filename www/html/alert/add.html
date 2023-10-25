@@ -36,7 +36,7 @@
     <div class="layui-inline">
       <label class="layui-form-label">方法</label>
       <div class="layui-input-inline">
-        <input type="radio" name="http_method" lay-filter="method_radio_filter" value="GET" title="GET"  {{if eq .data.HTTPMethod "GET"}} checked {{end}} >
+        <input type="radio" name="http_method" lay-filter="method_radio_filter" value="GET" title="GET"  {{if eq .data.HTTPMethod "GET"  }} checked {{else if eq .data.HTTPMethod "" }}  checked {{end}} >
         <input type="radio" name="http_method" lay-filter="method_radio_filter" value="POST" title="POST" {{if eq .data.HTTPMethod "POST"}} checked {{end}}>
       </div>
     </div>
@@ -58,13 +58,13 @@
       </div>
     </div>
 
-    <div class="layui-inline">
+<!--    <div class="layui-inline">
       <label class="layui-form-label">邮箱</label>
       <div class="layui-input-inline">
         <input type="text" id="email" name="email"  placeholder="通过邮件通知" lay-verify=""
                autocomplete="off" class="layui-input"/>
       </div>
-    </div>
+    </div>-->
 
   </div>
   <div class="layui-form-item">

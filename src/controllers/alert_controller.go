@@ -58,7 +58,7 @@ func (ic AlertController) GetAlertList(c *gin.Context) {
 	var total int64
 	db.Count(&total)
 
-	db.Limit(req.Limit).Offset(structs.GetOffset(req.Page, req.Limit))
+	//db.Limit(req.Limit).Offset(structs.GetOffset(req.Page, req.Limit))
 	db.Find(&alertJobs)
 
 	voList := handleDateFormat(alertJobs)
@@ -85,7 +85,7 @@ func (ac AlertController) Add(c *gin.Context) {
 	}
 
 	job := &models.AlertJob{AppName: req.AppName, HTTPMethod: req.HttpMethod, URL: req.Url, State: req.State,
-		Owner: req.Owner, CreateTime: time.Now(), UpdateTime: time.Now(), Note: req.Note, Body: req.Body, Phone: req.Phone}
+		Owner: req.Owner, CreateTime: time.Now(), UpdateTime: time.Now(), Note: req.Note, Body: req.Body, Phone: req.Phone, Type: req.Type}
 	var msg string
 	if req.Id == 0 {
 		// 保存
@@ -95,7 +95,7 @@ func (ac AlertController) Add(c *gin.Context) {
 		job.ID = req.Id
 		persistence.DB.Model(models.AlertJob{}).Where("id", req.Id).Updates(models.AlertJob{AppName: req.AppName,
 			State: req.State, HTTPMethod: req.HttpMethod, Owner: req.Owner, URL: req.Url})
-		persistence.DB.Exec("UPDATE alert_job SET app_name = ?, owner = ?, state = ?, http_method = ?, url = ?, update_time = ?, note=?, body=? , phone=? WHERE id = ?", req.AppName, req.Owner, req.State, req.HttpMethod, req.Url, time.Now(), req.Note, req.Body, req.Phone, req.Id)
+		persistence.DB.Exec("UPDATE alert_job SET app_name = ?, owner = ?, state = ?, http_method = ?, url = ?, update_time = ?, note=?, body=? , phone=?, type = ? WHERE id = ?", req.AppName, req.Owner, req.State, req.HttpMethod, req.Url, time.Now(), req.Note, req.Body, req.Phone, req.Type, req.Id)
 		msg = "编辑成功"
 	}
 	c.JSON(http.StatusOK, common.ResultMsg(1, msg))
@@ -151,10 +151,12 @@ func (ac AlertController) UpdateState(context *gin.Context) {
 	id, exists := context.GetQuery("id")
 	if !exists {
 		context.JSON(http.StatusBadRequest, common.ResultMsg(1, "id不能为空"))
+		return
 	}
 	state, exists := context.GetQuery("state")
 	if !exists {
 		context.JSON(http.StatusBadRequest, common.ResultMsg(1, "state不能为空"))
+		return
 	}
 	persistence.DB.Exec("update alert_job set state=? where id=?", state, id)
 	context.JSON(http.StatusOK, common.ResultOkMsg("状态更新成功"))

@@ -53,6 +53,11 @@ type Job struct {
 	AliveCheck string `mapstructure:"alive_check"`
 }
 
+type NacosService struct {
+	List []map[string]int `mapstructure:"list"`
+}
+
+// 总结构体
 type LibraryConfig struct {
 	Mode          string `mapstructure:"mode"`
 	Port          int    `mapstructure:"port"`
@@ -62,6 +67,7 @@ type LibraryConfig struct {
 	*SqliteConfig `mapstructure:"sqlite"`
 	*DingTalk     `mapstructure:"ding_talk"`
 	*Job          `mapstructure:"job"`
+	*NacosService `mapstructure:"nacos_service"`
 }
 
 func init() {

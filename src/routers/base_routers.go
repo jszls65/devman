@@ -9,4 +9,5 @@ func BaseRoutersInit(g *gin.Engine) {
 	RequestLogRouterInit(g)
 	AdminRouterInit(g)
 	AlertRoutersInit(g)
+	NacosRoutersInit(g)
 }

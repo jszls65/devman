@@ -14,7 +14,8 @@ type Querier interface {
 	FilterWithNameAndRole(name, role string) ([]gen.T, error)
 }
 
-func main2() {
+// func main() {
+func main22() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath: "./src/persistence/models",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
