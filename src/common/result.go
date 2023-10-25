@@ -9,7 +9,6 @@ func ResultMsg(code int, msg string) gin.H {
 	return gin.H{
 		"code": code,
 		"msg":  msg,
-		"data": nil,
 	}
 }
 
@@ -17,7 +16,6 @@ func ResultOk() gin.H {
 	return gin.H{
 		"code": 0,
 		"msg":  "操作成功",
-		"data": nil,
 	}
 }
 
@@ -25,14 +23,19 @@ func ResultOkMsg(msg string) gin.H {
 	return gin.H{
 		"code": 0,
 		"msg":  msg,
-		"data": nil,
 	}
 }
 
+func ResultOkMsgData(msg string, data interface{}) gin.H {
+	return gin.H{
+		"code": 0,
+		"msg":  msg,
+		"data": data,
+	}
+}
 func ResultFail(msg string) gin.H {
 	return gin.H{
 		"code": 1,
 		"msg":  msg,
-		"data": nil,
 	}
 }

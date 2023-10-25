@@ -62,7 +62,8 @@ CREATE TABLE `alert_job`(
     `exe_cycle` integer not null default 30, -- 执行周期, 每多少秒.
     `last_exe_time` datetime null , -- 上次执行时间.
     `last_exe_result` integer not null default 1, -- 上次执行结果 0-失败 1-成功
-    `in_fail_num` integer not null default 0, -- 连续失败次数, 成功会被改成0
+    `last_fail_time` datetime not null default 1, -- 上次失败时间
+    `heath_state` integer not null default 0, -- 健康状态 0-健康 1-告警 2-离线
     `fail_num` INTEGER not null default 0,  -- 失败次数
     `call_num` INTEGER not null default 0,  -- 调用总次数
     `state` integer not null default 1, -- 状态 0-停止 1-运行
