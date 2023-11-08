@@ -112,9 +112,9 @@ func (ac AlertController) checkUrl(req *structs.AlertCreateReq) string {
 	//	return "url不能重复"
 	//}
 	// 校验url是否能访问
-	errMsg, ok := utils.HttpClient(req.HttpMethod, req.Url, req.Body)
+	_, ok := utils.HttpClient(req.HttpMethod, req.Url, req.Body)
 	if !ok {
-		return errMsg
+		return "服务无法访问, 请修改URL"
 	}
 	return ""
 }

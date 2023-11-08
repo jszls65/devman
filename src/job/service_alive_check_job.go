@@ -46,14 +46,14 @@ func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) 
 		httpResult = sa.httpPost(alertJob.URL, alertJob.Body)
 	}
 
+	lastHeathState := alertJob.HeathState
 	if httpResult == constants.ResultFail { // 请求失败
-		alertJob.HeathState = 1
-		if alertJob.LastFailTime.IsZero() {
+		if alertJob.LastFailTime.IsZero() || lastHeathState == 0 {
+			alertJob.HeathState = 1            // 健康状态 0-健康 1-告警 2-离线
 			alertJob.LastFailTime = time.Now() // 记录失败时间
 		} else {
 			// 计算失败时间差
 			failDuration := time.Since(alertJob.LastFailTime)
-			// failDuration := time.Now().Sub(lastFailTime)
 			if failDuration.Minutes() >= config.Conf.DingTalk.AlertDuration && alertJob.HeathState != 2 {
 				dingTalkMsg := fmt.Sprintf("服务告警: [%s]服务没有响应, 请检查 ! ", alertJob.AppName)
 

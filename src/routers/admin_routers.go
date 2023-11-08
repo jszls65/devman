@@ -11,5 +11,6 @@ func AdminRouterInit(g *gin.Engine) {
 
 	group.GET("/", controllers.AdminController{}.Html)
 	group.GET("/welcome", controllers.AdminController{}.Welcome)
+	group.GET("/dl", controllers.FileController{}.DownloadFile)
 
 }

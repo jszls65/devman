@@ -24,7 +24,7 @@
 
             <div class="layui-inline layui-col-md3">
                 <div class="layui-input-block">
-                    <button class="layui-btn" onclick="search();">搜索</button>
+                    <button id="searchBtn" class="layui-btn">搜索</button>
                     <button class="layui-btn layui-btn-primary" onclick="clearForm();">重置</button>
                 </div>
             </div>
@@ -41,7 +41,8 @@
         <a class="layui-btn layui-btn-sm" onclick="loadAdd()">添加</a>
         <a class="layui-btn layui-btn-sm" onclick="delRow()">删除</a>
         <a class="layui-btn layui-btn-sm" onclick="loadEdit();">编辑</a>
-        <input style="" id="autoRefresh" type="checkbox" lay-skin="switch" lay-filter="autoRefresh" lay-text="开启刷新|关闭刷新" title=""></input>
+        <input style="" id="autoRefresh" type="checkbox" lay-skin="switch" lay-filter="autoRefresh"
+               lay-text="自动刷新|自动刷新" title=""></input>
     </div>
 </script>
 </body>
