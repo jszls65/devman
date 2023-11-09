@@ -91,7 +91,12 @@
     // 获取请求次数
     getRequestCount()
     // 打开默认菜单
-    menuFunc('监控', 'menuFuncAlert')
+    if(window.localStorage.menuName){
+        menuFunc(window.localStorage.menuName, window.localStorage.menuFunc)
+    }else{
+        menuFunc('监控', 'menuFuncAlert')
+    }
+    
 </script>
 </body>
 </html>

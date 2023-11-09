@@ -9,6 +9,9 @@ function menuFuncTool(env, name){
 }
 
 function menuFunc(menuName, fn){
+    // 记录上一次点击的菜单
+    window.localStorage.menuName = menuName
+    window.localStorage.menuFunc = fn
     $('#tabTitle').html(menuName);
     eval(fn)();
 }

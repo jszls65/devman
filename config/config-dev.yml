@@ -1,5 +1,27 @@
-mode: "dev"
+mode: "prod"
 port: 8559
+
+job:
+  enable: false
+  alive_check: "*/15 * * * * *"
+
+# 钉钉消息
+ding_talk:
+  enable: false
+  url: https://oapi.dingtalk.com/robot/send?access_token=9c1b320580b0421ba6182221b4e2f88e5c9c5dd5f498ed58576608f10f38781a
+  alert_duration: 2 # 单位: 分钟
+  next_duration: 60 # 单位: 分钟 第一次发送消息后, 每个n分钟再次发消息.
+
+nacos_service:
+  list:
+    - wimoor-auth: 1
+    - wimoor-admin: 1
+    - wimoor-amazon: 2
+    - wimoor-gateway: 1
+    - wimoor-erp: 1
+    - wimoor-amazon-adv: 2
+
+
 
 log:
   level: "debug"
