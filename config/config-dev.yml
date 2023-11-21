@@ -33,14 +33,15 @@ log:
 sqlite:
   path: "../dev-utils.db"
 
-mysql:
-  host: localhost
-  port: 3306
-  user: root
-  password: root
-  db: library
-  max_open_conns: 100
-  max_idle_conns: 20
+mysqls:
+  - env: 本地测试
+    host: localhost
+    port: 3306
+    user: root
+    password: 123456
+    db: mydb
+    max_open_conns: 100
+    max_idle_conns: 20
 
 redis:
   host: 127.0.0.1
