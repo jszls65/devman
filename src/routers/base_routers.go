@@ -7,7 +7,8 @@ import (
 func BaseRoutersInit(g *gin.Engine) {
 	IndexRouterInit(g)
 	RequestLogRouterInit(g)
-	AdminRouterInit(g)
+	ToolsRouterInit(g)
 	AlertRoutersInit(g)
 	NacosRoutersInit(g)
+	DatamapRouterInit(g)
 }

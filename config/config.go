@@ -12,6 +12,7 @@ import (
 var Conf = new(LibraryConfig)
 
 type MysqlConfig struct {
+	Env          string `mapstructure:"env"`
 	Host         string `mapstructure:"host"`
 	User         string `mapstructure:"user"`
 	Password     string `mapstructure:"password"`
@@ -62,7 +63,7 @@ type LibraryConfig struct {
 	Mode          string `mapstructure:"mode"`
 	Port          int    `mapstructure:"port"`
 	*LogConfig    `mapstructure:"log"`
-	*MysqlConfig  `mapstructure:"mysql"`
+	MysqlConfigs  []MysqlConfig `mapstructure:"mysqls"`
 	*RedisConfig  `mapstructure:"redis"`
 	*SqliteConfig `mapstructure:"sqlite"`
 	*DingTalk     `mapstructure:"ding_talk"`
@@ -118,4 +119,13 @@ func getEnvConfigMap(key string) (string, bool) {
 	}
 	val, ok := envMap[key]
 	return val, ok
+}
+
+func GetMysqlByEnv(env string) *MysqlConfig {
+	for _, conf := range Conf.MysqlConfigs {
+		if conf.Env == env {
+			return &conf
+		}
+	}
+	return nil
 }

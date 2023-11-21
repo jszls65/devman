@@ -1,0 +1,156 @@
+{{ define "datamap/list.html"}}
+<html lang="en">
+<head>
+    {{ template "common/page_head.html" . }}
+    <style>
+        .level-2-div {
+            width:70%;
+            margin-left:20px;
+        }
+        .render-table-face {
+            display: inline-block;
+        }
+        .render-table-face:hover {
+            color: orange;
+        }
+        .catalogue-box {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            z-index: 999;
+        }
+        .catalogue-box i {
+            font-size: 40px;
+        }
+        .catalogue-box i:hover {
+            color: orange;
+        }
+        .catalogue-list {
+            display: flex;
+            flex-direction: column;
+            /*flex-wrap: wrap;*/
+            height: 100%;
+            width: 100%;
+        }
+        .catalogue-detail {
+            width: 250px;
+            margin-left: 20px;
+        }
+        .selected-h3, .selected-div {
+            background-color: lightgoldenrodyellow;
+        }
+        .table_head{
+            display: flex;
+            justify-content: flex-end;
+            width: 60%;
+            float: right;
+        }
+        .tableCommentSpan{
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            max-width: 150px;
+            text-align: left;
+            height: 20px;
+            line-height: 20px;
+            margin-left: 5px;
+
+        }
+    </style>
+
+    <script type="text/javascript" src="/static/js/datamap/list.js"></script>
+    <script type="text/javascript" src="/static/js/datamap/fastcode.js"></script>
+    <script type="text/javascript" src="/static/js/datamap/clipboard.min.js"></script>
+
+</head>
+<body style="margin-left: 0px;">
+<div class="layui-fluid">
+     <input type="hidden" id="dataKey" value="{{.env}}">
+    <div hidden="hidden"><span id="tableNames">{{.tableNames}}</span></div>
+    <button id="copyUrl" style="display:none;"></button>
+    <div class="">
+        <div class="catalogue-box" id="catalogueBox">
+            <i class="layui-icon layui-icon-form" id="catalogueTip" title="目录"></i>
+        </div>
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
+        </div>
+<!--        <div class="layui-card-body">-->
+<!--            <p>-->
+<!--            <span class="layui-breadcrumb">-->
+<!--               <a th:href="@{'#' + ${group.key}}" th:each="group : ${tableMap}" th:text="${group.key}"></a> -->
+<!--            </span>-->
+<!--            </p>-->
+<!--        </div>-->
+    </div>
+    <br>
+
+    <div >
+        <!--<h1 >表</h1>-->
+        <div style="margin-left:10px;">
+            <h2> </h2>
+            {{ range $index,$tab := .tableInfos}}
+            <div class="level-2-div">
+                <a name="{{$tab.TableName}}"><h3  style="float: left;" title="{{$tab.TableName}}">{{$tab.TableName}}</h3></a>
+<!--                <span class="layui-badge layui-bg-gray tableCommentSpan" title="{{$tab.TableComment}}">好的</span>-->
+                <span class="layui-badge layui-bg-gray tableCommentSpan" title="{{$tab.TableComment}}">{{$tab.TableComment}}</span>
+                <div class="table_head">
+                    <span style="color: #AAAAAA;" ></span>
+                    <span style="color: #AAAAAA;" ></span>
+                    <!--<span><a style="width: 20px;margin-left: 5px;" class="layui-icon layui-icon-face-surprised render-table-face layui-anim layui-anim-rotate" href="javascript:;" title="点点看" >测试表</a></span>-->
+                </div>
+
+                <table class="layui-table" lay-size="sm" lay-filter="123">
+                    <colgroup>
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="200">
+                    </colgroup>
+                    <thead>
+
+                    <tr>
+                        <th lay-data="{field:'tField', sort:true}">列名(Field)</th>
+                        <th lay-data="{field:'tType', sort:true}">类型(Type)</th>
+                        <th lay-data="{field:'tNull', sort:true}">可为空(Null)</th>
+                        <th lay-data="{field:'tKey', sort:true}">主键(Key)</th>
+                        <th lay-data="{field:'tDefault', sort:true}">默认值(Default)</th>
+                        <th lay-data="{field:'tExtra', sort:true}">描述(Extra)</th>
+                        <th lay-data="{field:'comment', sort:true}">备注(Comment)</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+
+                    {{range $index,$col := $tab.Columns}}
+                    <tr >
+                        <td >{{$col.Field}}</td>
+                        <td >{{$col.Type}}</td>
+                        <td >{{$col.IsNull}}</td>
+                        <td >{{$col.Key}}</td>
+                        <td >{{$col.Default}}</td>
+                        <td >{{$col.Extra}}</td>
+                        <td >{{$col.Comment}}</td>
+                    </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{else}}
+            请手动刷新缓存
+            {{end}}
+
+        </div>
+        <br>
+    </div>
+   
+</div>
+
+</body>
+</html>
+{{ end }}

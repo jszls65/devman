@@ -15,7 +15,6 @@ var DB *gorm.DB
 var err error
 
 func init() {
-	log.Println("dbconn init")
 	path := config.Conf.SqliteConfig.Path
 	log.Println("数据库path:", path)
 	DB, err = gorm.Open(sqlite.Open(path), &gorm.Config{})

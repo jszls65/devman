@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminController struct{}
+type ToolsController struct{}
 
-func (ic AdminController) Html(c *gin.Context) {
-	c.HTML(200, "admin/admin.html", nil)
+func (ic ToolsController) Html(c *gin.Context) {
+	c.HTML(200, "admin/tools.html", nil)
 }
 
-func (ic AdminController) Welcome(c *gin.Context) {
+func (ic ToolsController) Welcome(c *gin.Context) {
 	c.HTML(200, "admin/welcome.html", nil)
 }
 
