@@ -8,7 +8,7 @@ job:
 # 钉钉消息
 ding_talk:
   enable: false
-  url: https://oapi.dingtalk.com/robot/send?access_token=9c1b320580b0421ba6182221b4e2f88e5c9c5dd5f498ed58576608f10f38781a
+  url: ***
   alert_duration: 2 # 单位: 分钟
   next_duration: 60 # 单位: 分钟 第一次发送消息后, 每个n分钟再次发消息.
 
@@ -39,7 +39,7 @@ mysqls:
     port: 3306
     user: root
     password: 123456
-    db: mydb
+    db: gin-bili
     max_open_conns: 100
     max_idle_conns: 20
 
