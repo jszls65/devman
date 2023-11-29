@@ -3,9 +3,10 @@
 package middlewares
 
 import (
-	"dev-utils/src/common"
-	"github.com/gin-gonic/gin"
+	"devman/src/common"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func RateLimiterMiddleware(c *gin.Context) {

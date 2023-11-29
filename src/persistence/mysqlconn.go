@@ -1,10 +1,11 @@
 package persistence
 
 import (
-	"dev-utils/config"
+	"devman/config"
+	"log"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm/logger"
-	"log"
 
 	"gorm.io/gorm"
 )

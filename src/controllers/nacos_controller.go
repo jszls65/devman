@@ -3,17 +3,18 @@
 package controllers
 
 import (
-	"dev-utils/config"
-	"dev-utils/src/common"
-	"dev-utils/src/structs"
+	"devman/config"
+	"devman/src/common"
+	"devman/src/structs"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type NacosController struct {

@@ -3,8 +3,9 @@
 package routers
 
 import (
-	"dev-utils/src/controllers"
-	"dev-utils/src/middlewares"
+	"devman/src/controllers"
+	"devman/src/middlewares"
+
 	"github.com/gin-gonic/gin"
 )
 

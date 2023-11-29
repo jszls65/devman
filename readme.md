@@ -1,4 +1,4 @@
-# dev-utils (开发工具集)
+# DEVMAN
 ## 开篇
 - 命名: 本来想用一些花里胡哨的名字, 如下
     比如mytool, 参考mycat, mysql之类, 还有本人非常喜欢的utool, hutool之类.

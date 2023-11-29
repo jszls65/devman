@@ -1,17 +1,18 @@
 package job
 
 import (
-	"dev-utils/config"
-	"dev-utils/src/common/constants"
-	"dev-utils/src/common/dingtalk"
-	"dev-utils/src/persistence"
-	"dev-utils/src/persistence/models"
+	"devman/config"
+	"devman/src/common/constants"
+	"devman/src/common/dingtalk"
+	"devman/src/persistence"
+	"devman/src/persistence/models"
 	"fmt"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // 服务健康检查

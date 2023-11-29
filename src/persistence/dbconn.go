@@ -1,9 +1,10 @@
 package persistence
 
 import (
-	"dev-utils/config"
-	"gorm.io/gorm/logger"
+	"devman/config"
 	"log"
+
+	"gorm.io/gorm/logger"
 
 	//"gorm.io/driver/sqlite"  官方的使用cgo, 有时候服务器上并没有cgo环境, 所以改成第三方库了.
 	"github.com/glebarez/sqlite"

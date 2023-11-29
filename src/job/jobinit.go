@@ -3,9 +3,10 @@
 package job
 
 import (
-	"dev-utils/config"
-	"github.com/robfig/cron/v3"
+	"devman/config"
 	"log"
+
+	"github.com/robfig/cron/v3"
 )
 
 var cr *cron.Cron

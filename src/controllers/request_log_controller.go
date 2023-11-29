@@ -3,9 +3,9 @@
 package controllers
 
 import (
-	"dev-utils/src/common"
-	"dev-utils/src/persistence"
-	"dev-utils/src/persistence/models"
+	"devman/src/common"
+	"devman/src/persistence"
+	"devman/src/persistence/models"
 	"net/http"
 	"time"
 

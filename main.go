@@ -1,9 +1,9 @@
 package main
 
 import (
-	"dev-utils/config"
-	_ "dev-utils/src/job"
-	"dev-utils/src/routers"
+	"devman/config"
+	_ "devman/src/job"
+	"devman/src/routers"
 	"log"
 	"strconv"
 

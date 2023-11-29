@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"dev-utils/src/common/constants"
-	"dev-utils/src/persistence/models"
+	"devman/src/common/constants"
+	"devman/src/persistence/models"
 	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 )
 

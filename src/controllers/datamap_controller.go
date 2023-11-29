@@ -2,14 +2,15 @@ package controllers
 
 import (
 	"database/sql"
-	"dev-utils/config"
-	"dev-utils/src/common"
-	"dev-utils/src/persistence"
-	structs "dev-utils/src/structs/datamap"
-	"github.com/gin-gonic/gin"
+	"devman/config"
+	"devman/src/common"
+	"devman/src/persistence"
+	structs "devman/src/structs/datamap"
 	"net/http"
 	"strings"
 	"sync"
+
+	"github.com/gin-gonic/gin"
 )
 
 type DatamapController struct{}
@@ -47,54 +48,6 @@ func (ic DatamapController) refreshCache(env string) {
 	tableInfoMap[env] = tableInfos
 }
 
-// 填充字段的备注
-func fillColumnComment(env string, infos []structs.TableInfo) []structs.TableInfo {
-	sqlStr := `
-		SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, COLUMN_COMMENT FROM information_schema.columns WHERE table_schema = @dbName
-`
-	mysql := persistence.GetMysql(env)
-	var comments []structs.TableColumnMatedata
-	mysql.Raw(sqlStr, sql.Named("dbName", config.GetMysqlByEnv(env).DB)).Scan(&comments)
-	// 表:字段列表
-	commentsMap := getColumnCommentByTable(comments)
-	for _, table := range infos {
-		comments, ok := commentsMap[table.TableName]
-		if !ok {
-			continue
-		}
-		// 单个字段与备注map
-		var colComMap = make(map[string]string)
-		for _, com := range comments {
-			colComMap[com.ColumnName] = com.ColumnComment
-		}
-		for index, column := range table.Columns {
-			comment, ok := colComMap[column.Field]
-			if !ok {
-				continue
-			}
-			column.Comment = comment
-			table.Columns[index] = column
-		}
-	}
-	return infos
-}
-
-// 表名:字段列表 map
-func getColumnCommentByTable(comments []structs.TableColumnMatedata) map[string][]structs.TableColumnMatedata {
-	comMap := make(map[string][]structs.TableColumnMatedata)
-	for _, com := range comments {
-		cols, ok := comMap[com.TableName]
-		if !ok {
-			initList := make([]structs.TableColumnMatedata, 0)
-			initList = append(initList, com)
-			comMap[com.TableName] = initList
-			continue
-		}
-		cols = append(cols, com)
-		comMap[com.TableName] = cols
-	}
-	return comMap
-}
 
 func fillTableColumnInfo(env string, infos []structs.TableInfo) []structs.TableInfo {
 	if len(infos) == 0 {
@@ -137,7 +90,7 @@ func (ic DatamapController) ListTableInfo(env string, dbName string) []structs.T
 func (ic DatamapController) RefreshCache(context *gin.Context) {
 	env, ok := context.GetQuery("env")
 	if !ok {
-		env = "生产环境"
+		env = "测试环境"
 	}
 	ic.refreshCache(env)
 	context.JSON(http.StatusOK, common.ResultMsg(http.StatusOK, "刷新缓存成功"))

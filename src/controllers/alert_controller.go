@@ -3,15 +3,16 @@
 package controllers
 
 import (
-	"dev-utils/src/common"
-	"dev-utils/src/common/utils"
-	"dev-utils/src/persistence"
-	"dev-utils/src/persistence/models"
-	"dev-utils/src/structs"
+	"devman/src/common"
+	"devman/src/common/utils"
+	"devman/src/persistence"
+	"devman/src/persistence/models"
+	"devman/src/structs"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type AlertController struct{}

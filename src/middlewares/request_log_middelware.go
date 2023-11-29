@@ -3,7 +3,8 @@
 package middlewares
 
 import (
-	"dev-utils/src/controllers"
+	"devman/src/controllers"
+
 	"github.com/gin-gonic/gin"
 )
 

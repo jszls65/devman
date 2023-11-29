@@ -1,6 +1,6 @@
 package main
 
-import "dev-utils/src/job"
+import "devman/src/job"
 
 // 测试服务存活
 

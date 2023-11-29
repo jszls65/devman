@@ -53,8 +53,9 @@
                         <i class="layui-icon layui-icon-engine"> metadata</i>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;" onclick="menuFunc('测试环境', 'menuFuncDatamap')">测试环境</a></dd>
-                        <dd id="alertTest"><a href="javascript:;" onclick="menuFunc('生产环境', 'menuFuncDatamap')">生产环境</a></dd>
+                        {{ range $index,$val := .envs }}
+                        <dd><a href="javascript:;" onclick="menuFunc('{{$val}}','menuFuncDatamap')">{{$val}}</a></dd>
+                        {{end}}
                     </dl>
                 </li>
             </ul>
