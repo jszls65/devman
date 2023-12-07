@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"devman/config"
 	"devman/src/common/constants"
 	"devman/src/persistence/models"
 	"encoding/json"
@@ -11,7 +12,14 @@ import (
 type ToolsController struct{}
 
 func (ic ToolsController) Html(c *gin.Context) {
-	c.HTML(200, "admin/tools.html", nil)
+	configs := config.Conf.MysqlConfigs
+	envs := make([]string, 0)
+	for _, v := range configs {
+		envs = append(envs, v.Env)
+	}
+	c.HTML(200, "admin/tools.html", gin.H{
+		"envs": envs,
+	})
 }
 
 func (ic ToolsController) Welcome(c *gin.Context) {

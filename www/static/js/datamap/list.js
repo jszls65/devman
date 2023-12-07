@@ -6,7 +6,7 @@ var listLayer;
 var layuiForm;
 var loadOnId;
 //JavaScript代码区域
-layui.use(['element', 'util', 'table', 'layer', 'form'], function(){
+layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
     var util = layui.util;
     listLayer = layui.layer;
     layuiForm = layui.form;
@@ -68,6 +68,7 @@ function openCatalogue() {
     listLayer.open({
         title: '表名检索 <span class="layui-badge">'+tableNameList.length+'</span>'
         ,content: html
+        ,id: 'catalogueBox'
         ,shade:0
         ,offset:'rt'
         ,area: ['300px', '520px']
@@ -358,5 +359,53 @@ function renderTable(demo) {
                 });
         }
     });
+}
+
+var showCreateTableRunning = false;
+function showCreateTable(tableName){
+    if(showCreateTableRunning){
+        return;
+    }
+    // loading
+    // var currLoadIndex = listLayer.load(4, {
+    //     shade: [0.7,'#fff'] //0.1透明度的白色背景
+    // });
+    layer.msg('加载中', {
+        icon: 16
+        , offset: '250px'
+        ,shade: 0.01
+    });
+    showCreateTableRunning = true;
+    var env = $('#dataKey').val()
+
+    $.ajax({
+        url: '/datamap/load-code?env='+env+'&tableName='+tableName
+        ,type: 'GET'
+        ,async : true
+        ,headers: {'Content-Type': 'application/json'}
+        ,success: function (str){
+            listLayer.open({
+                type: 1
+                , title: "生成代码"
+                , area: ['700px', '550px']
+                , offset: '10px'
+                , id: "showCreateTable"
+                , shade: 0.6 // 遮罩透明度
+                , shadeClose: true
+                , maxmin: true
+                , scrollbar: false // 屏蔽浏览器滚动条
+                , content: str //注意，如果str是object，那么需要字符拼接。
+            });
+        }
+        ,complete: function (){
+            // listLayer.close(currLoadIndex);
+            layer.closeAll('loading');
+            showCreateTableRunning = false;
+        }
+        ,error: function (){
+
+        }
+    })
+
 }
 

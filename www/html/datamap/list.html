@@ -58,6 +58,12 @@
             margin-left: 5px;
 
         }
+        .render-table-face {
+            display: inline-block;
+        }
+        .render-table-face:hover {
+            color: orange;
+        }
     </style>
 
     <script type="text/javascript" src="/static/js/datamap/list.js"></script>
@@ -99,7 +105,8 @@
                 <div class="table_head">
                     <span style="color: #AAAAAA;" ></span>
                     <span style="color: #AAAAAA;" ></span>
-                    <!--<span><a style="width: 20px;margin-left: 5px;" class="layui-icon layui-icon-face-surprised render-table-face layui-anim layui-anim-rotate" href="javascript:;" title="点点看" >测试表</a></span>-->
+                    
+                    <span style="cursor: pointer;" title="生成代码" onclick="showCreateTable('{{$tab.TableName}}')" lay-id="code">&lt;/&gt;</span>
                 </div>
 
                 <table class="layui-table" lay-size="sm" lay-filter="123">
