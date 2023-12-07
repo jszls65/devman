@@ -370,7 +370,7 @@ function showCreateTable(tableName){
     // var currLoadIndex = listLayer.load(4, {
     //     shade: [0.7,'#fff'] //0.1透明度的白色背景
     // });
-    layer.msg('加载中', {
+    var currLoadIndex = layer.msg('加载中', {
         icon: 16
         , offset: '250px'
         ,shade: 0.01
@@ -386,7 +386,7 @@ function showCreateTable(tableName){
         ,success: function (str){
             listLayer.open({
                 type: 1
-                , title: "生成代码"
+                , title: "建表语句"
                 , area: ['700px', '550px']
                 , offset: '10px'
                 , id: "showCreateTable"
@@ -398,8 +398,7 @@ function showCreateTable(tableName){
             });
         }
         ,complete: function (){
-            // listLayer.close(currLoadIndex);
-            layer.closeAll('loading');
+            listLayer.close(currLoadIndex);
             showCreateTableRunning = false;
         }
         ,error: function (){
