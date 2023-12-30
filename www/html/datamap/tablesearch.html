@@ -1,0 +1,24 @@
+{{ define "datamap/tablesearch.html"}}
+<html lang="en">
+<head>
+    {{ template "common/page_head.html" . }}
+    <style>
+
+    </style>
+
+</head>
+<body style="margin-left: 0px;">
+<div>
+    <input style="top:0px;position:sticky;" class="layui-input" type="text" id="searchBox" placeholder="请输入查询" autocomplete="off" oninput="searchCatalogue();">
+    <div class="catalogue-list">
+        <!--循环体-->
+        {{ range $index,$name := .tableNames}}
+        <div class="catalogue-detail"><a href="#{{$name}}" >{{$name}}</a></div>
+<!--        <div class="catalogue-detail"><a href="#{{$name}}" onclick="selectTable('{{$name}}');">{{$name}}</a></div>-->
+        {{end}}
+    </div>
+</div>
+
+</body>
+</html>
+{{ end }}

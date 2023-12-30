@@ -2,17 +2,17 @@ package structs
 
 type ColumnInfo struct {
 	// 列名
-	Field string
+	TField string
 	// 数据类型
-	Type string
+	TType string
 	// 是否可为null
-	IsNull string
+	TNull string
 	// 主键
-	Key string
+	TKey string
 	// 默认值
-	Default string
+	TDefault string
 	// 描述
-	Extra string
+	TExtra string
 	// 备注
-	Comment string
+	TComment string
 }

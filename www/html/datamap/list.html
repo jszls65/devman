@@ -77,19 +77,12 @@
     <div hidden="hidden"><span id="tableNames">{{.tableNames}}</span></div>
     <button id="copyUrl" style="display:none;"></button>
     <div class="">
-        <div class="catalogue-box" id="catalogueBox">
-            <i class="layui-icon layui-icon-form" id="catalogueTip" title="目录"></i>
-        </div>
-        <div class="layui-btn-container">
-            <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
-        </div>
-<!--        <div class="layui-card-body">-->
-<!--            <p>-->
-<!--            <span class="layui-breadcrumb">-->
-<!--               <a th:href="@{'#' + ${group.key}}" th:each="group : ${tableMap}" th:text="${group.key}"></a> -->
-<!--            </span>-->
-<!--            </p>-->
-<!--        </div>-->
+        <a name="topM">
+            <div class="layui-btn-container">
+                <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
+            </div>
+        </a>
+
     </div>
     <br>
 
@@ -138,13 +131,13 @@
 
                     {{range $index,$col := $tab.Columns}}
                     <tr >
-                        <td >{{$col.Field}}</td>
-                        <td >{{$col.Type}}</td>
-                        <td >{{$col.IsNull}}</td>
-                        <td >{{$col.Key}}</td>
-                        <td >{{$col.Default}}</td>
-                        <td >{{$col.Extra}}</td>
-                        <td >{{$col.Comment}}</td>
+                        <td >{{$col.TField}}</td>
+                        <td >{{$col.TType}}</td>
+                        <td >{{$col.TNull}}</td>
+                        <td >{{$col.TKey}}</td>
+                        <td >{{$col.TDefault}}</td>
+                        <td >{{$col.TExtra}}</td>
+                        <td >{{$col.TComment}}</td>
                     </tr>
                     {{end}}
                     </tbody>
@@ -161,5 +154,9 @@
 </div>
 
 </body>
+<script>
+    // 表名检索
+    openTableSearch();
+</script>
 </html>
 {{ end }}

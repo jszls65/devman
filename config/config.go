@@ -13,6 +13,7 @@ var Conf = new(LibraryConfig)
 
 type MysqlConfig struct {
 	Env          string `mapstructure:"env"`
+	Enable       bool   `mapstructure:"enable"`
 	Host         string `mapstructure:"host"`
 	User         string `mapstructure:"user"`
 	Password     string `mapstructure:"password"`
@@ -121,11 +122,24 @@ func getEnvConfigMap(key string) (string, bool) {
 	return val, ok
 }
 
+// 根据环境变量名称获取mysql的配置
 func GetMysqlByEnv(env string) *MysqlConfig {
 	for _, conf := range Conf.MysqlConfigs {
-		if conf.Env == env {
+		if conf.Env == env && conf.Enable {
 			return &conf
 		}
 	}
 	return nil
+}
+
+// 获取有效mysql配置
+func ListEnableMysqlConfig() []MysqlConfig {
+	list := make([]MysqlConfig, 0)
+	for _, conf := range Conf.MysqlConfigs {
+		if !conf.Enable {
+			continue
+		}
+		list = append(list, conf)
+	}
+	return list
 }

@@ -35,11 +35,21 @@ sqlite:
 
 mysqls:
   - env: 本地测试
+    enable: true
     host: localhost
     port: 3306
     user: root
     password: 123456
-    db: gin-bili
+    db: smart_test
+    max_open_conns: 100
+    max_idle_conns: 20
+  - env: 线上环境
+    enable: false
+    host: "***"
+    port: 3306
+    user: "**"
+    password: "**"
+    db: smart-test
     max_open_conns: 100
     max_idle_conns: 20
 

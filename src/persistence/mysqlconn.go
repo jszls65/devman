@@ -14,7 +14,7 @@ import (
 var _dbMap map[string]*gorm.DB
 
 func init() {
-	mysqlconfigs := config.Conf.MysqlConfigs
+	mysqlconfigs := config.ListEnableMysqlConfig()
 	_dbMap = make(map[string]*gorm.DB)
 
 	for _, mysqlconfig := range mysqlconfigs {

@@ -7,11 +7,12 @@ import (
 	"devman/src/persistence"
 	"devman/src/structs"
 	structsm "devman/src/structs/datamap"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strings"
 	"sync"
+
+	"github.com/gin-gonic/gin"
 )
 
 type DatamapController struct{}
@@ -43,13 +44,15 @@ func (ic DatamapController) Html(c *gin.Context) {
 	})
 }
 
+// 刷新缓存
 func (ic DatamapController) refreshCache(env string) {
 	// 查询数据
-	tableInfos := ic.ListTableInfo(env, config.GetMysqlByEnv(env).DB)
+	tableInfos := ic.ListTableInfo(env)
 	fillTableColumnInfo(env, tableInfos)
 	tableInfoMap[env] = tableInfos
 }
 
+// 填充表字段信息
 func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.TableInfo {
 	if len(infos) == 0 {
 		return infos
@@ -65,10 +68,19 @@ func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.Tabl
 			<-ch
 			// 表字段切片
 			var cols []structsm.ColumnInfo
-			sqlStr := "SELECT \n    COLUMN_NAME Field, IS_NULLABLE `Null`, column_type  `Type`, COLUMN_COMMENT Comment, EXTRA Extra, COLUMN_KEY `Key`, column_default `Default`\nFROM\n    INFORMATION_SCHEMA.COLUMNS\nwhere " +
-				"\n    TABLE_SCHEMA = '" + tableItem.DbName + "' and TABLE_NAME = '" + tableItem.TableName + "'\nORDER BY ORDINAL_POSITION;"
+			// sqlStr := "SELECT \n    COLUMN_NAME Field, IS_NULLABLE `Null`, column_type  `Type`, COLUMN_COMMENT Comment, EXTRA Extra, COLUMN_KEY `Key`, column_default `Default`\nFROM\n    INFORMATION_SCHEMA.COLUMNS\nwhere " +
+			// 	"\n    TABLE_SCHEMA = '" + tableItem.DbName + "' and TABLE_NAME = '" + tableItem.TableName + "'\nORDER BY ORDINAL_POSITION;"
+
+			sqlStr := `
+				SELECT 
+    COLUMN_NAME  TField, IS_NULLABLE TNull, column_type  TType, COLUMN_COMMENT TComment, EXTRA TExtra, COLUMN_KEY TKey, column_default TDefault
+    FROM
+        INFORMATION_SCHEMA.COLUMNS
+        where    TABLE_SCHEMA = @dbName and TABLE_NAME = @tableName
+        ORDER BY ORDINAL_POSITION;
+				`
 			//sqlStr := "desc `" + tableItem.TableName + "`"
-			mysql.Raw(sqlStr).Scan(&cols)
+			mysql.Raw(sqlStr, sql.Named("dbName", tableItem.DbName), sql.Named("tableName", tableItem.TableName)).Scan(&cols)
 			infos[index].Columns = cols
 		}(index, tableItem)
 	}
@@ -76,18 +88,21 @@ func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.Tabl
 	return infos
 }
 
-func (ic DatamapController) ListTableInfo(env string, dbName string) []structsm.TableInfo {
+// 查询所有表的表名和表注释列表
+func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
 	sqlStr := `select
 			table_name,
 			table_comment
 		from information_schema.tables where TABLE_SCHEMA = @dbName;`
 	mysql := persistence.GetMysql(env)
+	dbName := config.GetMysqlByEnv(env).DB
 	// 查询结果
 	var tableInfos []structsm.TableInfo
 	mysql.Raw(sqlStr, sql.Named("dbName", dbName)).Scan(&tableInfos)
 	return tableInfos
 }
 
+// 刷新缓存
 func (ic DatamapController) RefreshCache(context *gin.Context) {
 	env, ok := context.GetQuery("env")
 	if !ok {
@@ -97,6 +112,7 @@ func (ic DatamapController) RefreshCache(context *gin.Context) {
 	context.JSON(http.StatusOK, common.ResultMsg(http.StatusOK, "刷新缓存成功"))
 }
 
+// 生成建表语句
 func (ic DatamapController) LoadCode(context *gin.Context) {
 	tableName, _ := context.GetQuery("tableName")
 	env, _ := context.GetQuery("env")
@@ -120,6 +136,24 @@ func (ic DatamapController) LoadCode(context *gin.Context) {
 	createTableSqlMap[env+"-"+tableName] = ret.CreateTable
 	context.HTML(http.StatusOK, "datamap/gencode.html", gin.H{
 		"createSql": ret.CreateTable,
+	})
+}
+
+func (th DatamapController) TableSearch(context *gin.Context) {
+	// 获取env
+	// 从缓冲中获取表名列表
+	env, exists := context.GetQuery("env")
+	if !exists {
+		panic("参数异常")
+	}
+
+	tableInfos := th.ListTableInfo(env)
+	tableNames := make([]string, 0)
+	for _, info := range tableInfos {
+		tableNames = append(tableNames, info.TableName)
+	}
+	context.HTML(http.StatusOK, "datamap/tablesearch.html", gin.H{
+		"tableNames": tableNames,
 	})
 }
 

@@ -28,3 +28,6 @@ dev-utils.db
 dev-utils
 deploy.sh
 alertman.zip
+devman
+devman.zip
+go.sum

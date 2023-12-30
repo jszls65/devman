@@ -12,7 +12,7 @@ import (
 type ToolsController struct{}
 
 func (ic ToolsController) Html(c *gin.Context) {
-	configs := config.Conf.MysqlConfigs
+	configs := config.ListEnableMysqlConfig()
 	envs := make([]string, 0)
 	for _, v := range configs {
 		envs = append(envs, v.Env)

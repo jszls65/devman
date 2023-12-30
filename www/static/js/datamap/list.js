@@ -13,83 +13,61 @@ layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
     //执行top块
     util.fixbar({});
 
-    initEvent();
-});
-
-/**
- * 初始化事件
- */
-function initEvent() {
-    // 初始化刷新缓存按钮事件
     initRefreshCache();
-    // 初始化赋值链接组件
-    // initCopyUrl();
-    // 初始化导航菜单
-    initCatalogue();
-}
-
-/**
- * 初始化目录事件
- */
-function initCatalogue() {
-    if ($('#catalogueBox').length <= 0) {
-        return;
-    }
-    openCatalogue();
-    $('#catalogueTip').click(function () {
-        openCatalogue();
-        // 手动触发菜单时自动聚焦输入框
-        $('#searchBox').focus();
-    });
-}
+});
 
 /**
  * 打开目录
  */
-function openCatalogue() {
-    $('#catalogueBox').hide();
+
+function openTableSearch(){
+
+    var dataKey = $('#dataKey').val();
+    if (!dataKey || '' === dataKey) {
+        return;
+    }
+
     var tableNamesStr = $('#tableNames').html().trim();
     if (tableNamesStr === "") {
         return;
     }
     var tableNameList = tableNamesStr.split(",");
-    // 名称排序
-    // tableNameList.sort();
-    var html = '<div>';
-    html += '<input style="top:0px;position:sticky;" class="layui-input" type="text" id="searchBox" placeholder="请输入查询" autocomplete="off" oninput="searchCatalogue();"><div class="catalogue-list">';
-    for (var j = 0; j < tableNameList.length; j++) {
-        if (!tableNameList[j]) {
-            continue;
+
+    $.ajax({
+        url: '/datamap/table-search?env='+dataKey
+        ,type: 'GET'
+        ,async : true
+        ,headers: {'Content-Type': 'application/json'}
+        ,success: function (str){
+            listLayer.open({
+                // title: '表名检索'
+                title: '<a href="#topM" title="回到顶部">表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' +
+                    '<i class="layui-icon layui-icon-up"></i></a> '
+                ,content: str
+                ,id: 'catalogueBox'
+                ,shade:0
+                ,offset:'rt'
+                ,area: ['300px', '585px']
+                ,btn:[]
+                ,type:1
+                ,maxmin:false
+                ,move: false
+                ,anim:1
+                ,closeBtn: 0
+                ,restore: function () {
+                }
+                ,success: function(layero, index){
+
+                }
+            });
         }
-        var name = tableNameList[j];
-        html += '<div class="catalogue-detail"><a href="#' + name +'" onclick="selectTable(\'' + name + '\');">' + name + '</a></div>';
-    }
-    html += '</div></div>';
-    listLayer.open({
-        title: '表名检索 <span class="layui-badge">'+tableNameList.length+'</span>'
-        ,content: html
-        ,id: 'catalogueBox'
-        ,shade:0
-        ,offset:'rt'
-        ,area: ['300px', '520px']
-        ,btn:[]
-        ,type:1
-        ,maxmin:false
-        ,anim:1
-        ,full: function () {
-            $($('div[class="catalogue-list"]')[0]).css("height", ($(window).height() - 110) + "px");
+        ,complete: function (){
+            // showCreateTableRunning = false;
         }
-        ,restore: function () {
-            $($('div[class="catalogue-list"]')[0]).css("height", "100%");
+        ,error: function (){
+
         }
-        ,end: function () {
-            dealWithH3Selected();
-            $('#catalogueBox').show();
-        }
-        ,success: function(layero, index){
-            document.getElementById('searchBox').addEventListener('keyup', dealWithKeyEvent);
-        }
-    });
+    })
 }
 
 /**
@@ -279,85 +257,6 @@ function initRefreshCache() {
                 layer.alert('刷新当前数据库缓存失败！');
             }
         });
-    });
-}
-
-/**
- * 表格智能化转换
- *
- * @param demo
- */
-function renderTable(demo) {
-    var table = layui.table;
-    table.init(demo, {
-        toolbar: true,
-        defaultToolbar: ['filter', 'exports', 'print',
-            {
-                title: '链接',
-                layEvent: 'LAYTABLE_LINK',
-                icon: 'layui-icon-link'
-            },
-            {
-                title: '建表语句',
-                layEvent: 'LAYTABLE_CREATE',
-                icon: 'layui-icon-template-1'
-            },
-            {
-                title: '快捷代码',
-                layEvent: 'LAYTABLE_FAST_CODE',
-                icon: 'layui-icon-fonts-code layui-anim layui-anim-rotate'
-            }
-        ],
-        limit:1000,
-        tableName:demo
-    });
-
-    table.on('toolbar(' + demo + ')', function(obj){
-        var tableName = obj.config.tableName;
-        var dataKey = $('#dataKey').val();
-        switch (obj.event) {
-            //自定义头工具栏右侧图标 - 链接
-            case 'LAYTABLE_LINK':
-                var url = contextPath + '/info/show-table?dataKey=' + dataKey + '&tableName=' + tableName;
-                $('#copyUrl').attr('data-clipboard-text', url);
-                $('#copyUrl').click();
-                break;
-            //自定义头工具栏右侧图标 - 建表语句
-            case 'LAYTABLE_CREATE':
-                $.ajax({
-                    type : 'GET',
-                    url : contextPath + '/info/table-create-info',
-                    data : {dataKey : dataKey, tableName : tableName},
-                    success : function(result) {
-                        listLayer.open({
-                            title: '建表语句',
-                            content: '<pre class="layui-code">' + result + '</pre>',
-                            area: ['800px', '500px']
-                        });
-                    },
-                    error : function () {
-                        listLayer.alert('查询失败', {title: '建表语句'});
-                    }
-                });
-                break;
-            // FastCode 快速代码工具
-            case 'LAYTABLE_FAST_CODE':
-                var config = obj.config;
-                var fastCodeHtml = getFastCodeHtml(config);
-                listLayer.open({
-                    title: '快捷代码',
-                    content: fastCodeHtml,
-                    area: ['800px', '600px'],
-                    success: function (layero, index) {
-                        layuiForm.render('radio', 'fastcodeform');
-                        if ($('#insertSql4MyBatis').length > 0) {
-                            layuiForm.on('radio()', function (data) {
-                                radioClick(data.elem, data.value);
-                            });
-                        }
-                    }
-                });
-        }
     });
 }
 
