@@ -17,10 +17,8 @@ func main() {
 	g.LoadHTMLGlob("./www/html/**/*")
 	// 静态文件
 	g.Static("/static", "./www/static")
-
 	// 中间件
 	//g.Use(middlewares.RequestLogMiddleware)
-
 	// 注册路由
 	routers.BaseRoutersInit(g)
 

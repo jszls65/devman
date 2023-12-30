@@ -74,10 +74,11 @@
 <body style="margin-left: 0px;">
 <div class="layui-fluid">
      <input type="hidden" id="dataKey" value="{{.env}}">
+     <input type="hidden" id="shareFlag" value="{{.shareFlag}}">
     <div hidden="hidden"><span id="tableNames">{{.tableNames}}</span></div>
     <button id="copyUrl" style="display:none;"></button>
     <div class="">
-        <a name="topM">
+        <a name="topM" id="topM">
             <div class="layui-btn-container">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
             </div>
@@ -99,6 +100,9 @@
                     <span style="color: #AAAAAA;" ></span>
                     <span style="color: #AAAAAA;" ></span>
                     
+                    <span style="cursor: pointer;height: 23px;line-height: 23px;margin: 0 5px;" title="复制链接" onclick="copyUrl('{{$tab.TableName}}')" lay-id="code">
+                        <i class="layui-icon layui-icon-share" style="font-size: 14px; color: #1E9FFF;"></i>
+                    </span>
                     <span style="cursor: pointer;" title="建表语句" onclick="showCreateTable('{{$tab.TableName}}')" lay-id="code">
                         <i class="layui-icon layui-icon-list" style="font-size: 20px; color: #1E9FFF;"></i>
                     </span>
@@ -155,8 +159,21 @@
 
 </body>
 <script>
-    // 表名检索
-    openTableSearch();
+
+
+    // 是否是单表分享
+    var shareFlag = $("#shareFlag").val()
+    if(shareFlag == 'true'){
+        $("#topM").hide()
+    }else{
+        // 表名检索
+        openTableSearch();
+        $("#topM").show()
+
+    }
+
+    initCopyUrl()
+
 </script>
 </html>
 {{ end }}

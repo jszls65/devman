@@ -23,9 +23,6 @@ layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
 function openTableSearch(){
 
     var dataKey = $('#dataKey').val();
-    if (!dataKey || '' === dataKey) {
-        return;
-    }
 
     var tableNamesStr = $('#tableNames').html().trim();
     if (tableNamesStr === "") {
@@ -39,7 +36,8 @@ function openTableSearch(){
         ,async : true
         ,headers: {'Content-Type': 'application/json'}
         ,success: function (str){
-            listLayer.open({
+            layui.layer.open({
+            // listLayer.open({
                 // title: '表名检索'
                 title: '<a href="#topM" title="回到顶部">表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' +
                     '<i class="layui-icon layui-icon-up"></i></a> '
@@ -49,7 +47,7 @@ function openTableSearch(){
                 ,offset:'rt'
                 ,area: ['300px', '585px']
                 ,btn:[]
-                ,type:1
+                ,type:0
                 ,maxmin:false
                 ,move: false
                 ,anim:1
@@ -212,13 +210,20 @@ function searchCatalogue() {
 function initCopyUrl() {
     copyBtn = new ClipboardJS('#copyUrl');
     copyBtn.on('success',function(e) {
-        listLayer.alert('链接已复制到剪切板，内容如下：<br>' + e.text, {title: '链接'});
+        listLayer.alert('链接已复制到剪切板，内容如下：<br>' + e.text, {title: '链接',offset: 't' });
         e.clearSelection();
     });
     copyBtn.on('error',function(e) {
         //复制失败；
-        listLayer.alert('链接复制失败，需要您手动复制如下链接：<br>' + e.text, {title: '链接'});
+        listLayer.alert('链接复制失败，需要您手动复制如下链接：<br>' + e.text, {title: '链接', offset: 't' });
     });
+}
+
+function copyUrl(tableName){
+    var dataKey = $('#dataKey').val();
+    var url = window.location.host + '/datamap/share?env=' + dataKey + '&tableName=' + tableName;
+    $('#copyUrl').attr('data-clipboard-text', url);
+    $('#copyUrl').click();
 }
 
 /**

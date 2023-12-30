@@ -13,5 +13,6 @@ func DatamapRouterInit(g *gin.Engine) {
 	group.GET("/refreshCache", controllers.DatamapController{}.RefreshCache)
 	group.GET("/load-code", controllers.DatamapController{}.LoadCode)
 	group.GET("/table-search", controllers.DatamapController{}.TableSearch)
+	group.GET("/share", controllers.DatamapController{}.Share)
 
 }

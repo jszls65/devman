@@ -22,6 +22,7 @@ var sw = sync.WaitGroup{}                                // 同步等待组
 var ch = make(chan int, 1)                               // 协程数量限制
 var createTableSqlMap = make(map[string]string)          // 建表语句缓存, key:环境-表名, value是create语句
 
+// 主页面
 func (ic DatamapController) Html(c *gin.Context) {
 
 	env, ok := c.GetQuery("env")
@@ -154,6 +155,33 @@ func (th DatamapController) TableSearch(context *gin.Context) {
 	}
 	context.HTML(http.StatusOK, "datamap/tablesearch.html", gin.H{
 		"tableNames": tableNames,
+	})
+}
+
+func (ic DatamapController) Share(context *gin.Context) {
+	env, _ := context.GetQuery("env")
+	tableName, _ := context.GetQuery("tableName")
+
+	tableInfos, ok := tableInfoMap[env]
+	filterTableInfos := make([]structsm.TableInfo, 0)
+	for _, info := range tableInfos {
+		if info.TableName == tableName {
+			filterTableInfos = append(filterTableInfos, info)
+		}
+	}
+	if !ok {
+		// 查询数据 刷新缓存
+		go ic.refreshCache(env)
+	}
+	tableNames := make([]string, 0)
+	for _, tab := range tableInfos {
+		tableNames = append(tableNames, tab.TableName)
+	}
+	context.HTML(200, "datamap/list.html", gin.H{
+		"tableInfos": filterTableInfos,
+		"tableNames": strings.Join(tableNames, ","),
+		"env":        env,
+		"shareFlag":  true,
 	})
 }
 
