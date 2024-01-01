@@ -47,6 +47,11 @@ func (ic DatamapController) Html(c *gin.Context) {
 
 // 刷新缓存
 func (ic DatamapController) refreshCache(env string) {
+	defer func() {
+		if re := recover(); re != nil {
+			log.Println("刷新缓存失败: ", re)
+		}
+	}()
 	// 查询数据
 	tableInfos := ic.ListTableInfo(env)
 	fillTableColumnInfo(env, tableInfos)

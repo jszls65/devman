@@ -34,7 +34,7 @@ sqlite:
   path: "../dev-utils.db"
 
 mysqls:
-  - env: 本地测试
+  - env: smartad_测试
     enable: true
     host: localhost
     port: 3306
@@ -43,7 +43,7 @@ mysqls:
     db: smart_test
     max_open_conns: 100
     max_idle_conns: 20
-  - env: 本地_cmswing
+  - env: cmswing_测试
     enable: true
     host: localhost
     port: 3306
