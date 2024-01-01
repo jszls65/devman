@@ -1,15 +1,11 @@
 {{ define "datamap/tablesearch.html"}}
 <html lang="en">
 <head>
-    {{ template "common/page_head.html" . }}
-    <style>
-
-    </style>
 
 </head>
 <body style="margin-left: 0px;">
 <div>
-    <input style="top:0px;position:sticky;" class="layui-input" type="text" id="searchBox" placeholder="请输入查询" autocomplete="off" oninput="searchCatalogue();">
+    <input style="top:-17px;position:sticky;margin-left: -17px;width:295px;" class="layui-input" type="text" id="searchBox" placeholder="请输入查询" autocomplete="off" oninput="searchCatalogue();">
     <div class="catalogue-list">
         <!--循环体-->
         {{ range $index,$name := .tableNames}}

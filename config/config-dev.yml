@@ -43,6 +43,16 @@ mysqls:
     db: smart_test
     max_open_conns: 100
     max_idle_conns: 20
+  - env: 本地_cmswing
+    enable: true
+    host: localhost
+    port: 3306
+    user: root
+    password: 123456
+    db: cmswing
+    max_open_conns: 100
+    max_idle_conns: 20
+
   - env: 线上环境
     enable: false
     host: "***"

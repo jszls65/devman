@@ -1,66 +1,54 @@
-// 复制链接对象
-var copyBtn;
-// 当前页layer对象
-var listLayer;
-// form对象
-var layuiForm;
-var loadOnId;
-//JavaScript代码区域
-layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
-    var util = layui.util;
-    listLayer = layui.layer;
-    layuiForm = layui.form;
-    //执行top块
-    util.fixbar({});
 
-    initRefreshCache();
-});
 
 /**
  * 打开目录
  */
-
+var openTableSearchRunning = false
+var openTableSearchId
 function openTableSearch(){
-
+    // layer.closeAll()
+    // layer.close(openTableSearchId)
+    if(openTableSearchRunning){
+        return;
+    }
+    openTableSearchRunning = true
     var dataKey = $('#dataKey').val();
-
     var tableNamesStr = $('#tableNames').html().trim();
     if (tableNamesStr === "") {
         return;
     }
     var tableNameList = tableNamesStr.split(",");
-
     $.ajax({
         url: '/datamap/table-search?env='+dataKey
         ,type: 'GET'
-        ,async : true
+        ,async : false
         ,headers: {'Content-Type': 'application/json'}
         ,success: function (str){
-            layui.layer.open({
-            // listLayer.open({
-                // title: '表名检索'
+            openTableSearchId = layui.layer.open({
                 title: '<a href="#topM" title="回到顶部">表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' +
                     '<i class="layui-icon layui-icon-up"></i></a> '
+                // ,content: "str"
                 ,content: str
-                ,id: 'catalogueBox'
+                ,id: '1221212121'
                 ,shade:0
                 ,offset:'rt'
                 ,area: ['300px', '585px']
                 ,btn:[]
-                ,type:0
                 ,maxmin:false
                 ,move: false
-                ,anim:1
-                ,closeBtn: 0
+                // ,closeBtn: 0
                 ,restore: function () {
+                    console.log(9999)
                 }
                 ,success: function(layero, index){
 
                 }
             });
+            console.log("openTableSearchId:"+openTableSearchId)
+            openTableSearchRunning = false
         }
         ,complete: function (){
-            // showCreateTableRunning = false;
+            openTableSearchRunning = false;
         }
         ,error: function (){
 
@@ -210,7 +198,7 @@ function searchCatalogue() {
 function initCopyUrl() {
     copyBtn = new ClipboardJS('#copyUrl');
     copyBtn.on('success',function(e) {
-        listLayer.alert('链接已复制到剪切板，内容如下：<br>' + e.text, {title: '链接',offset: 't' });
+        listLayer.alert('链接已复制到剪切板，内容如下：<br>' + e.text, {title: '链接',offset: 't',id:"copyurl2" });
         e.clearSelection();
     });
     copyBtn.on('error',function(e) {

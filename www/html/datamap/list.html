@@ -35,8 +35,10 @@
             width: 100%;
         }
         .catalogue-detail {
-            width: 250px;
-            margin-left: 20px;
+            width: 450px;
+            margin-left: 5px;
+            height: 17px;
+            line-height: 17px;
         }
         .selected-h3, .selected-div {
             background-color: lightgoldenrodyellow;
@@ -79,6 +81,9 @@
     <button id="copyUrl" style="display:none;"></button>
     <div class="">
         <a name="topM" id="topM">
+            <div class="catalogue-box" id="catalogueBox" onclick="openTableSearch()">
+                <i class="layui-icon layui-icon-form" id="catalogueTip"  title="目录"></i>
+            </div>
             <div class="layui-btn-container">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
             </div>
@@ -100,7 +105,7 @@
                     <span style="color: #AAAAAA;" ></span>
                     <span style="color: #AAAAAA;" ></span>
                     
-                    <span style="cursor: pointer;height: 23px;line-height: 23px;margin: 0 5px;" title="复制链接" onclick="copyUrl('{{$tab.TableName}}')" lay-id="code">
+                    <span style="cursor: pointer;height: 23px;line-height: 23px;margin: 0 5px;" title="复制链接" onclick="copyUrl('{{$tab.TableName}}')" >
                         <i class="layui-icon layui-icon-share" style="font-size: 14px; color: #1E9FFF;"></i>
                     </span>
                     <span style="cursor: pointer;" title="建表语句" onclick="showCreateTable('{{$tab.TableName}}')" lay-id="code">
@@ -159,7 +164,23 @@
 
 </body>
 <script>
+    // 复制链接对象
+    var copyBtn;
+    // 当前页layer对象
+    var listLayer;
+    // form对象
+    var layuiForm;
+    var loadOnId;
+    //JavaScript代码区域
+    layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
+        var util = layui.util;
+        listLayer = layui.layer;
+        layuiForm = layui.form;
+        //执行top块
+        util.fixbar({});
 
+        initRefreshCache();
+    });
 
     // 是否是单表分享
     var shareFlag = $("#shareFlag").val()
