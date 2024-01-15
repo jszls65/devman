@@ -4,6 +4,8 @@ port: 8559
 job:
   enable: false
   alive_check: "*/15 * * * * *"
+  auto_rule: "*/15 * * * * *"    # 每小时10分检测自动化日志有没有生成
+#  auto_rule: "0 10 0/1 * * ? "    # 每小时10分检测自动化日志有没有生成
 
 # 钉钉消息
 ding_talk:
