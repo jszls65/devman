@@ -16,10 +16,10 @@ import (
 )
 
 // 服务健康检查
-type ServiceAliveCheck struct {
+type ServiceAliveCheckJob struct {
 }
 
-func (sa *ServiceAliveCheck) Run() {
+func (sa *ServiceAliveCheckJob) Run() {
 	if !config.Conf.Job.Enable {
 		log.Println("job enable=false, 任务停止")
 		return
@@ -38,7 +38,7 @@ func (sa *ServiceAliveCheck) Run() {
 
 }
 
-func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) {
+func (sa *ServiceAliveCheckJob) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) {
 	// startTime := time.Now()
 	var httpResult int32
 	if alertJob.HTTPMethod == "GET" {
@@ -74,7 +74,7 @@ func (sa *ServiceAliveCheck) doJobsItem(alertJob *models.AlertJob, db *gorm.DB) 
 	// db.Create(logItem)
 }
 
-func (sa *ServiceAliveCheck) httpGet(url string) int32 {
+func (sa *ServiceAliveCheckJob) httpGet(url string) int32 {
 	client := http.Client{
 		Timeout: 30 * time.Second,
 	}
@@ -86,7 +86,7 @@ func (sa *ServiceAliveCheck) httpGet(url string) int32 {
 	return constants.ResultOK
 }
 
-func (sa *ServiceAliveCheck) httpPost(url string, body string) int32 {
+func (sa *ServiceAliveCheckJob) httpPost(url string, body string) int32 {
 	client := http.Client{
 		Timeout: 30 * time.Second,
 	}

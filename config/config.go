@@ -53,6 +53,7 @@ type DingTalk struct {
 type Job struct {
 	Enable     bool   `mapstructure:"enable"`
 	AliveCheck string `mapstructure:"alive_check"`
+	AutoRule   string `mapstructure:"auto_rule"`
 }
 
 type NacosService struct {
