@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"devman/config"
 	"devman/src/common"
+	"devman/src/common/utils"
 	"devman/src/persistence"
 	"devman/src/structs"
 	structsm "devman/src/structs/datamap"
@@ -29,7 +30,7 @@ func (ic DatamapController) Html(c *gin.Context) {
 	if !ok {
 		env = "生产环境"
 	}
-	tableInfos, ok := tableInfoMap[env]
+	tableInfos, ok := utils.GetMap(tableInfoMap, env)
 	if !ok {
 		// 查询数据 刷新缓存
 		go ic.refreshCache(env)
@@ -55,7 +56,8 @@ func (ic DatamapController) refreshCache(env string) {
 	// 查询数据
 	tableInfos := ic.ListTableInfo(env)
 	fillTableColumnInfo(env, tableInfos)
-	tableInfoMap[env] = tableInfos
+	//tableInfoMap[env] = tableInfos
+	utils.PutMap(tableInfoMap, env, tableInfos)
 }
 
 // 填充表字段信息
@@ -63,7 +65,7 @@ func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.Tabl
 	if len(infos) == 0 {
 		return infos
 	}
-	mysql := persistence.GetMysql(env)
+	mysql, _ := persistence.GetMysql(env)
 	mysqlByEnv := config.GetMysqlByEnv(env)
 	for index, tableItem := range infos {
 		tableItem.DbName = mysqlByEnv.DB
@@ -100,7 +102,7 @@ func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
 			table_name,
 			table_comment
 		from information_schema.tables where TABLE_SCHEMA = @dbName;`
-	mysql := persistence.GetMysql(env)
+	mysql, _ := persistence.GetMysql(env)
 	dbName := config.GetMysqlByEnv(env).DB
 	// 查询结果
 	var tableInfos []structsm.TableInfo
@@ -124,7 +126,7 @@ func (ic DatamapController) LoadCode(context *gin.Context) {
 	env, _ := context.GetQuery("env")
 
 	// 获取建表语句
-	mysql := persistence.GetMysql(env)
+	mysql, _ := persistence.GetMysql(env)
 	val, ok := createTableSqlMap[env+"-"+tableName]
 	if ok {
 		context.HTML(http.StatusOK, "datamap/gencode.html", gin.H{
@@ -167,7 +169,8 @@ func (ic DatamapController) Share(context *gin.Context) {
 	env, _ := context.GetQuery("env")
 	tableName, _ := context.GetQuery("tableName")
 
-	tableInfos, ok := tableInfoMap[env]
+	//tableInfos, ok := tableInfoMap[env]
+	tableInfos, ok := utils.GetMap(tableInfoMap, env)
 	filterTableInfos := make([]structsm.TableInfo, 0)
 	for _, info := range tableInfos {
 		if info.TableName == tableName {

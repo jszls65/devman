@@ -21,7 +21,7 @@ func main22() {
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 	})
 
-	gormdb, err := gorm.Open(sqlite.Open("../dev-utils.db"), &gorm.Config{})
+	gormdb, err := gorm.Open(sqlite.Open("../devman.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("连接数据库失败: ", err)
 		return

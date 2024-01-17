@@ -25,7 +25,11 @@ func (sa *AutoRuleCheckJob) Run() {
 	startTimeStr := startTime.Format(time.DateTime)
 	endTimeStr := time.Now().Format(time.DateTime)
 
-	db := persistence.GetMysql("生产环境")
+	db, err := persistence.GetMysql("生产环境")
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
 	execedNum := 0 // 已经执行的记录数
 	db.Raw(`select count(*) from t_amz_adv_auto_log 
 		where create_time >= @startTime and  create_time <= @endTime`,

@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"devman/config"
+	"errors"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -32,6 +33,10 @@ func init() {
 }
 
 // 返回特定环境的数据库连接
-func GetMysql(name string) *gorm.DB {
-	return _dbMap[name]
+func GetMysql(name string) (*gorm.DB, error) {
+	db, ok := _dbMap[name]
+	if !ok {
+		return nil, errors.New("env不存在")
+	}
+	return db, nil
 }

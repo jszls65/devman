@@ -16,9 +16,9 @@ type FileController struct {
 
 // DownloadFile 下载文件, 备份db文件
 func (con FileController) DownloadFile(context *gin.Context) {
-	file, err := os.Open("../dev-utils.db")
+	file, err := os.Open("../devman.db")
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "../dev-utils.db文件不存在！"})
+		context.JSON(http.StatusNotFound, gin.H{"error": "../devman.db文件不存在！"})
 		return
 	}
 	defer func(file *os.File) {

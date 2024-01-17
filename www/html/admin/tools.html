@@ -39,23 +39,22 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> 任务</i></a>
-                    <dl class="layui-nav-child">
-                        <dd id=""><a href="javascript:;" onclick="menuFunc('监控', 'menuFuncAlert')">监控</a></dd>
-                    </dl>
-                </li>
-
-                <li class="layui-nav-item"><a href="javascript:;" onclick="menuFunc('工具', 'menuFuncTool')">
-                    <i class="layui-icon layui-icon-util"> 工具</i></a></li>
-
-                <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">
-                        <i class="layui-icon layui-icon-engine"> metadata</i>
+                        <i class="layui-icon layui-icon-engine"> 元数据</i>
                     </a>
                     <dl class="layui-nav-child">
                         {{ range $index,$val := .envs }}
                         <dd><a href="javascript:;" onclick="menuFunc('{{$val}}','menuFuncDatamap')">{{$val}}</a></dd>
                         {{end}}
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> 开发</i></a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="menuFunc('监控', 'menuFuncAlert')">监控</a></dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="menuFunc('工具', 'menuFuncTool')">工具</a></dd>
                     </dl>
                 </li>
             </ul>

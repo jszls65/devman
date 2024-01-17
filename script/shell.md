@@ -11,7 +11,7 @@ docker run -d -p 8559:8559 --name alertman alertman:v1
 ## 启动容器
 docker start alertman
 
-docker cp ../dev-utils.db alertman:/app/alertman
+docker cp ../devman.db alertman:/app/alertman
 
 ## 导出镜像
 docker export alertman > alertman.tar

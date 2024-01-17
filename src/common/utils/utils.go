@@ -3,8 +3,10 @@
 package utils
 
 import (
+	structsm "devman/src/structs/datamap"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 // 发送http请求
@@ -21,4 +23,21 @@ func HttpClient(method string, url string, body string) (string, bool) {
 	}
 	defer resp.Body.Close()
 	return "", true
+}
+
+var lock sync.RWMutex
+
+// 加了读写锁的Map
+func PutMap(mapVal map[string][]structsm.TableInfo, key string, val []structsm.TableInfo) {
+	lock.Lock()
+	defer lock.Unlock()
+	mapVal[key] = val
+}
+
+// 加了读写锁的Map
+func GetMap(mapVal map[string][]structsm.TableInfo, key string) ([]structsm.TableInfo, bool) {
+	lock.Lock()
+	defer lock.Unlock()
+	infos, ok := mapVal[key]
+	return infos, ok
 }

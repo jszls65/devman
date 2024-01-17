@@ -24,8 +24,7 @@ go.mod
 go.sum
 .idea
 
-dev-utils.db
-dev-utils
+devman.db
 deploy.sh
 alertman.zip
 devman

@@ -46,8 +46,6 @@ CREATE table `alert_job`(
 );
 
 -- 新增字段 alert_job
--- 1. 重命名表
-alter  table alert_job rename to alert_job_bak;
 -- 2. 创建新表
 CREATE TABLE `alert_job`(
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -71,10 +69,6 @@ CREATE TABLE `alert_job`(
     create_time datetime not null,  -- 创建时间
     update_time datetime not null  -- 更新时间
 );
--- 3. 复制备份表中数据
-insert into alert_job (id,app_name,"type",http_method,url,owner,phone,exe_cycle,last_exe_time,last_exe_result,in_fail_num,fail_num,call_num,state,create_time,update_time)
-select * from alert_job_bak;
-
 
 -- 接口调用日志表
 drop table if exists `alert_log`;
