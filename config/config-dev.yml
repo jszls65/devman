@@ -1,11 +1,11 @@
-mode: "prod"
+mode: "dev"
 port: 8559
 
 job:
   enable: false
   alive_check: "*/15 * * * * *"
-  auto_rule: "*/15 * * * * *"    # 每小时10分检测自动化日志有没有生成
-#  auto_rule: "0 10 0/1 * * ? "    # 每小时10分检测自动化日志有没有生成
+#  auto_rule: "*/15 * * * * *"    # 每小时10分检测自动化日志有没有生成
+  auto_rule: "0 10 0/1 * * ? "    # 每小时10分检测自动化日志有没有生成
 
 # 钉钉消息
 ding_talk:
@@ -33,10 +33,10 @@ log:
   max_backups: 5
 
 sqlite:
-  path: "../dev-utils.db"
+  path: "../devman.db"
 
 mysqls:
-  - env: smartad_测试
+  - env: 生产环境
     enable: true
     host: localhost
     port: 3306
@@ -52,16 +52,6 @@ mysqls:
     user: root
     password: 123456
     db: cmswing
-    max_open_conns: 100
-    max_idle_conns: 20
-
-  - env: 线上环境
-    enable: false
-    host: "***"
-    port: 3306
-    user: "**"
-    password: "**"
-    db: smart-test
     max_open_conns: 100
     max_idle_conns: 20
 
