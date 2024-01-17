@@ -1,4 +1,4 @@
-mode: "prod"
+mode: "dev"
 port: 8559
 
 job:
