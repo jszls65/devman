@@ -1,15 +1,34 @@
-# DEVMAN
 
-[![Golang](https://img.shields.io/badge/golang-1.21.1-brightgreen)](https://golang.google.cn)
-[![Sqlite](https://img.shields.io/badge/sqlite-3.0-orange)](https://golang.google.cn)
-[![Layui](https://img.shields.io/badge/Layui-2.8-yellow)](https://layui.dev)
-[![License](https://img.shields.io/badge/license-apache2.0-blue)](https://github.com/jszls65/devman/blob/master/LICENSE)
+<p align="center" style="font-size: 40px;font-weight: bold">
+	Devman
+</p>
+
+<p align="center">
+    <a target="_blank" href="">
+        <img src='https://img.shields.io/badge/Golang-1.21.1-green.svg' alt='golang'/>
+    </a>
+    <a target="_blank" href="">
+        <img src='https://img.shields.io/badge/Sqlite-3.0-orange.svg' alt='sqlite'/>
+    </a>
+    <a target="_blank" href="">
+        <img src='https://img.shields.io/badge/Layui-2.8-yellow.svg' alt='sqlite'/>
+    </a>
+    <a target="_blank" href="">
+        <img src='https://img.shields.io/badge/License-apache2.0-blue.svg' alt='License'/>
+    </a>
+</p>
+
+<p align="center">
+	<strong>🚀简单易用的库表结构全局展示软件</strong>
+</p>
 
 ## 开篇
-- 命名: 本来想用一些花里胡哨的名字, 如下
+本来想用一些花里胡哨的名字, 如下
     比如mytool, 参考mycat, mysql之类, 还有本人非常喜欢的utool, hutool之类.
-    又比如fatcat, 本人有一个胖猫, 通体白色, 爱称白胖, 从不粘人, 喜静不喜动, 也是它肉嘟嘟的原因. 就像本项目的初衷一样, 它仅仅是一个工具而已, 轻巧, 不会自己加戏来吸引你的注意力. 你爱用就用, 不爱用就丢在一旁. 然而fatcat有大亨的意思, 很显然这么轻巧的工具还不止于此.
-最终都放弃了, 就像它提供的页面和功能都是如此直接了当, 没有任何套路. 也将`花里胡哨, 徒增功耗`一以贯之.
+    又比如fatcat, 本人有一个胖猫, 通体白色, 爱称白胖, 从不粘人, 喜静不喜动, 也是它肉嘟嘟的原因. 就像本项目的初衷一样, 
+它仅仅是一个工具而已, 轻巧, 不会自己加戏来吸引你的注意力. 你爱用就用, 不爱用就丢在一旁. 然而fatcat有大亨的意思, 很显然违背了初衷
+因为本项目是以简洁轻快为宗旨开发的, 也是选用golang开发的原因之一.
+最终都放弃了, 就像它提供的页面和功能都是如此直接了当, 没有任何套路. 也将简洁之风一以贯之.
 所以就叫 `devman` 吧.
 
 
@@ -24,6 +43,7 @@
 ### 2 服务监控告警
 当然, 如果团队中有专业的运维人员, 直接上zabbix或者Prometheus, 完全可以应对企业开发中的各种复杂监控场景.
 如果是小团队的开发人员想要应急, 需要一个简单实用的监控告警工具, 就没必要上笨重的监控框架了, 而且学习成本非常高.
+它仅是一个简单不多的HttpClient, 通过自定义的定时规则检查接口是否成功响应而已, 如此简单.
 
 
 ## 项目介绍
