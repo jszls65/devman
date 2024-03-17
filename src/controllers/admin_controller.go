@@ -9,20 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ToolsController struct{}
+type AdminController struct{}
 
-func (ic ToolsController) Html(c *gin.Context) {
+func (ic AdminController) Html(c *gin.Context) {
 	configs := config.ListEnableMysqlConfig()
 	envs := make([]string, 0)
 	for _, v := range configs {
 		envs = append(envs, v.Env)
 	}
-	c.HTML(200, "admin/tools.html", gin.H{
+	c.HTML(200, "admin/admin.html", gin.H{
 		"envs": envs,
 	})
 }
 
-func (ic ToolsController) Welcome(c *gin.Context) {
+func (ic AdminController) Welcome(c *gin.Context) {
 	c.HTML(200, "admin/welcome.html", nil)
 }
 

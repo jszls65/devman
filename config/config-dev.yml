@@ -10,7 +10,7 @@ job:
 # 钉钉消息
 ding_talk:
   enable: false
-  url: ***
+  url: 
   alert_duration: 2 # 单位: 分钟
   next_duration: 60 # 单位: 分钟 第一次发送消息后, 每个n分钟再次发消息.
 
@@ -33,6 +33,7 @@ log:
   max_backups: 5
 
 sqlite:
+  enable: false
   path: "../devman.db"
 
 mysqls:
@@ -43,8 +44,6 @@ mysqls:
     user: root
     password: 123456
     db: smart_test
-    max_open_conns: 100
-    max_idle_conns: 20
   - env: cmswing_测试
     enable: true
     host: localhost

@@ -9,8 +9,8 @@ function menuFuncTool(env, name){
 }
 
 function menuFuncDatamap(env, name){
-    $("#iframe_body").attr("src", "/datamap?env="+env);
-
+        $("#iframe_body").attr("src", "/datamap?env="+env);
+    
 }
 
 function menuFunc(menuName, fn){
@@ -26,4 +26,15 @@ function getRequestCount(){
     $.get("/log/sum", {}, function (data) {
         $('#sum').html(data.data)
     });
+}
+
+// 获取sqlite数据库是否开启
+function getSqliteDbOpen(){
+    $.get("/alert/sdb-open", {}, function(data){
+        console.log(data)
+        if(!data){
+            // 把菜单隐藏
+            $("#menuFuncAlertDl").hide();
+        }
+    })
 }

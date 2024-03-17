@@ -16,6 +16,11 @@ var DB *gorm.DB
 var err error
 
 func init() {
+	enable := config.Conf.SqliteConfig.Enable
+	if !enable {
+		log.Println("sqlite 数据库未启用")
+		return
+	}
 	path := config.Conf.SqliteConfig.Path
 	log.Println("数据库path:", path)
 	DB, err = gorm.Open(sqlite.Open(path), &gorm.Config{})

@@ -105,8 +105,16 @@ func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
 	mysql, _ := persistence.GetMysql(env)
 	dbName := config.GetMysqlByEnv(env).DB
 	// 查询结果
+	var tableMiniInfos []structsm.TableMiniInfo
+	mysql.Raw(sqlStr, sql.Named("dbName", dbName)).Scan(&tableMiniInfos)
+
 	var tableInfos []structsm.TableInfo
-	mysql.Raw(sqlStr, sql.Named("dbName", dbName)).Scan(&tableInfos)
+	for _, info := range tableMiniInfos{
+		t:= structsm.TableInfo{}
+		t.TableName = info.TableName
+		t.TableComment = info.TableComment
+		tableInfos = append(tableInfos, t)
+	}
 	return tableInfos
 }
 

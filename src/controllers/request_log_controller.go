@@ -3,6 +3,7 @@
 package controllers
 
 import (
+	"devman/config"
 	"devman/src/common"
 	"devman/src/persistence"
 	"devman/src/persistence/models"
@@ -17,6 +18,11 @@ type RequestLogController struct {
 }
 
 func (s RequestLogController) Save(c *gin.Context) {
+	enable := config.Conf.SqliteConfig.Enable
+	if !enable {
+		// log.Println("sqlite 数据库未启用")
+		return
+	}
 	db := persistence.DB
 	// 保存日志数据
 	reqLog := models.RequestLog{
@@ -34,6 +40,10 @@ func (s RequestLogController) Save(c *gin.Context) {
 
 // 查询统计数据
 func (r RequestLogController) Sum(c *gin.Context) {
+	en := config.Conf.SqliteConfig.Enable
+	if(!en){
+		return
+	}
 	db := persistence.DB
 	var count int64
 	db.Model(&models.RequestLog{}).Where("1=1").Count(&count)

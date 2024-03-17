@@ -25,6 +25,7 @@ type MysqlConfig struct {
 
 type SqliteConfig struct {
 	Path string `mapstructure:"path" json:"path"`
+	Enable       bool   `mapstructure:"enable"`
 }
 
 type RedisConfig struct {

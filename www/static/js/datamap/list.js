@@ -5,9 +5,9 @@
  */
 var openTableSearchRunning = false
 var openTableSearchId
+
 function openTableSearch(){
-    // layer.closeAll()
-    // layer.close(openTableSearchId)
+    
     if(openTableSearchRunning){
         return;
     }

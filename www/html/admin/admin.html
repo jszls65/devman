@@ -1,4 +1,4 @@
-{{ define "admin/tools.html" }}
+{{ define "admin/admin.html" }}
 <html>
 {{ template "common/page_head.html" . }}
 <body>
@@ -50,7 +50,7 @@
                 </li>
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> 开发</i></a>
-                    <dl class="layui-nav-child">
+                    <dl class="layui-nav-child" id="menuFuncAlertDl">
                         <dd><a href="javascript:;" onclick="menuFunc('监控', 'menuFuncAlert')">监控</a></dd>
                     </dl>
                     <dl class="layui-nav-child">

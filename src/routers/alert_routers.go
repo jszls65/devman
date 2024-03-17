@@ -18,5 +18,6 @@ func AlertRoutersInit(g *gin.Engine) {
 	group.POST("/add", controllers.AlertController{}.Add)
 	group.POST("/del", controllers.AlertController{}.Del)
 	group.GET("/update-state", controllers.AlertController{}.UpdateState)
+	group.GET("/sdb-open", controllers.AlertController{}.DbOpen)  // sqllite数据库是否开启
 
 }

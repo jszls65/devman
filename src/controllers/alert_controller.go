@@ -3,6 +3,7 @@
 package controllers
 
 import (
+	"devman/config"
 	"devman/src/common"
 	"devman/src/common/utils"
 	"devman/src/persistence"
@@ -49,7 +50,7 @@ func (ic AlertController) GetAlertList(c *gin.Context) {
 	}
 
 	var alertJobs []models.AlertJob
-	db := persistence.DB.Order("id desc").Model(&alertJobs)
+		db := persistence.DB.Order("id desc").Model(&alertJobs)
 	if req.AppName != "" {
 		db.Where("app_name like ?", "%"+req.AppName+"%")
 	}
@@ -162,3 +163,10 @@ func (ac AlertController) UpdateState(context *gin.Context) {
 	persistence.DB.Exec("update alert_job set state=? where id=?", state, id)
 	context.JSON(http.StatusOK, common.ResultOkMsg("状态更新成功"))
 }
+
+func (ac AlertController) DbOpen(context *gin.Context){
+	enable := config.Conf.SqliteConfig.Enable
+	context.JSON(http.StatusOK, enable)
+}
+
+
