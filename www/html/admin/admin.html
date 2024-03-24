@@ -38,7 +38,7 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed">
+                <!-- <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">
                         <i class="layui-icon layui-icon-engine"> 元数据</i>
                     </a>
@@ -47,8 +47,23 @@
                         <dd><a href="javascript:;" onclick="menuFunc('{{$val}}','menuFuncDatamap')">{{$val}}</a></dd>
                         {{end}}
                     </dl>
-                </li>
+                </li> -->
+
+                {{ range $env, $confs := .envGroupMap }}
                 <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">
+                        <i class="layui-icon layui-icon-engine"> {{$env}}</i>
+                    </a>
+                    <dl class="layui-nav-child">
+                        {{ range $index,$val := $confs }}
+                        <dd><a href="javascript:;" onclick="menuFunc('{{$val.Id}}','menuFuncDatamap')">{{$val.DB}}</a></dd>
+                        {{end}}
+                    </dl>
+                </li>
+                        {{end}}
+
+
+                <!-- <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> 开发</i></a>
                     <dl class="layui-nav-child" id="menuFuncAlertDl">
                         <dd><a href="javascript:;" onclick="menuFunc('监控', 'menuFuncAlert')">监控</a></dd>
@@ -56,7 +71,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" onclick="menuFunc('工具', 'menuFuncTool')">工具</a></dd>
                     </dl>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>
@@ -105,7 +120,7 @@
     if(window.localStorage.menuName){
         menuFunc(window.localStorage.menuName, window.localStorage.menuFunc)
     }else{
-        menuFunc('监控', 'menuFuncAlert')
+        
     }
     
 </script>

@@ -37,22 +37,29 @@ sqlite:
   path: "../devman.db"
 
 mysqls:
-  - env: 生产环境
-    enable: true
-    host: localhost
-    port: 3306
-    user: root
-    password: 123456
+  - env: prod    
     db: smart_test
-  - env: cmswing_测试
     enable: true
     host: localhost
     port: 3306
     user: root
     password: 123456
+    
+  - env: prod
     db: cmswing
-    max_open_conns: 100
-    max_idle_conns: 20
+    enable: true
+    host: localhost
+    port: 3306
+    user: root
+    password: 123456
+
+  - env: test
+    db: cmswing
+    enable: true
+    host: localhost
+    port: 3306
+    user: root
+    password: 123456
 
 redis:
   host: 127.0.0.1

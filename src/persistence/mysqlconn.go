@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	"errors"
 	"log"
 
@@ -28,13 +28,13 @@ func init() {
 		sqlDB, _ := _db.DB()
 		sqlDB.SetMaxOpenConns(mysqlconfig.MaxOpenConns) //设置数据库连接池最大连接数
 		sqlDB.SetMaxIdleConns(mysqlconfig.MaxIdleConns) //连接池最大允许的空闲连接数，如果没有sql任务需要执行的连接数大于20，超过的连接会被连接池关闭
-		_dbMap[mysqlconfig.Env] = _db
+		_dbMap[mysqlconfig.Env + "," + mysqlconfig.DB] = _db
 	}
 }
 
 // 返回特定环境的数据库连接
-func GetMysql(name string) (*gorm.DB, error) {
-	db, ok := _dbMap[name]
+func GetMysql(configId string) (*gorm.DB, error) {
+	db, ok := _dbMap[configId]
 	if !ok {
 		return nil, errors.New("env不存在")
 	}

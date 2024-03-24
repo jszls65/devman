@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"database/sql"
-	"devman/config"
 	"devman/src/common"
+	"devman/src/common/config"
 	"devman/src/common/utils"
 	"devman/src/persistence"
 	"devman/src/structs"
@@ -20,19 +20,22 @@ type DatamapController struct{}
 
 var tableInfoMap = make(map[string][]structsm.TableInfo) // 环境名称:数据
 var sw = sync.WaitGroup{}                                // 同步等待组
-var createTableSqlMap = make(map[string]string) // 建表语句缓存, key:环境-表名, value是create语句
+var createTableSqlMap = make(map[string]string)          // 建表语句缓存, key:环境-表名, value是create语句
 
 // 主页面
 func (ic DatamapController) Html(c *gin.Context) {
 
-	env, ok := c.GetQuery("env")
+	configId, ok := c.GetQuery("configId")
 	if !ok {
-		env = "生产环境"
+		c.HTML(200, "datamap/list.html", gin.H{})
+		log.Println("参数异常")
+		return
 	}
-	tableInfos, ok := utils.GetMap(tableInfoMap, env)
+	tableInfos, ok := utils.GetMap(tableInfoMap, configId)
 	if !ok {
 		// 查询数据 刷新缓存
-		go ic.refreshCache(env)
+		ic.refreshCache(configId)
+		tableInfos, _ = utils.GetMap(tableInfoMap, configId)
 	}
 	tableNames := make([]string, 0)
 	for _, tab := range tableInfos {
@@ -41,39 +44,39 @@ func (ic DatamapController) Html(c *gin.Context) {
 	c.HTML(200, "datamap/list.html", gin.H{
 		"tableInfos": tableInfos,
 		"tableNames": strings.Join(tableNames, ","),
-		"env":        env,
+		"configId":   configId,
 	})
 }
 
 // 刷新缓存
-func (ic DatamapController) refreshCache(env string) {
-	defer func() {
-		if re := recover(); re != nil {
-			log.Println("刷新缓存失败: ", re)
-		}
-	}()
+func (ic DatamapController) refreshCache(configId string) {
+	// defer func() {
+	// 	if re := recover(); re != nil {
+	// 		log.Println("刷新缓存失败: ", re)
+	// 	}
+	// }()
 	// 查询数据
-	tableInfos := ic.ListTableInfo(env)
-	tableInfos = fillTableColumnInfo(env, tableInfos)
+	tableInfos := ic.ListTableInfo(configId)
+	tableInfos = fillTableColumnInfo(configId, tableInfos)
 	//tableInfoMap[env] = tableInfos
-	utils.PutMap(tableInfoMap, env, tableInfos)
+	utils.PutMap(tableInfoMap, configId, tableInfos)
 }
 
 // 填充表字段信息
-func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.TableInfo {
+func fillTableColumnInfo(configId string, infos []structsm.TableInfo) []structsm.TableInfo {
 	if len(infos) == 0 {
 		return infos
 	}
-	mysql, _ := persistence.GetMysql(env)
-	mysqlByEnv := config.GetMysqlByEnv(env)
+	mysql, _ := persistence.GetMysql(configId)
+	mysqlByEnv := config.GetMysqlByEnv(configId)
 	// 对表进行分组
-	groupTableInfos := getGroupTableInfos(mysqlByEnv.DB,  infos)
+	groupTableInfos := getGroupTableInfos(mysqlByEnv.DB, infos)
 
 	// 返回值
 	resultList := []structsm.TableInfo{}
 	// 对分组变量进行遍历
 	for i := range groupTableInfos {
-		tableSubList := groupTableInfos[i]		
+		tableSubList := groupTableInfos[i]
 
 		sw.Add(1) // 同步等待组数量
 		go func(tableItem []structsm.TableInfo) {
@@ -129,6 +132,7 @@ func getGroupTableInfos(dbName string, infos []structsm.TableInfo) [][]structsm.
 	}
 	return groupTableInfos
 }
+
 // 排序, 按照原始顺序进行排序
 func sortTableList(originList []structsm.TableInfo, targetList []structsm.TableInfo) []structsm.TableInfo {
 	targetMap := map[string]structsm.TableInfo{}
@@ -163,13 +167,13 @@ func getGroupTableColumns(cols []structsm.ColumnInfo) map[string][]structsm.Colu
 }
 
 // 查询所有表的表名和表注释列表
-func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
+func (ic DatamapController) ListTableInfo(configId string) []structsm.TableInfo {
+	dbName := strings.Split(configId, ",")[1]
 	sqlStr := `select
 			table_name,
 			table_comment
 		from information_schema.tables where TABLE_SCHEMA = @dbName;`
-	mysql, _ := persistence.GetMysql(env)
-	dbName := config.GetMysqlByEnv(env).DB
+	mysql, _ := persistence.GetMysql(configId)
 	// 查询结果
 	var tableMiniInfos []structsm.TableMiniInfo
 	mysql.Raw(sqlStr, sql.Named("dbName", dbName)).Scan(&tableMiniInfos)
@@ -186,11 +190,12 @@ func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
 
 // 刷新缓存
 func (ic DatamapController) RefreshCache(context *gin.Context) {
-	env, ok := context.GetQuery("env")
+	configId, ok := context.GetQuery("configId")
 	if !ok {
-		env = "测试环境"
+		context.JSON(http.StatusBadRequest, common.ResultMsg(http.StatusBadRequest, "参数错误"))
+		return
 	}
-	ic.refreshCache(env)
+	ic.refreshCache(configId)
 	context.JSON(http.StatusOK, common.ResultMsg(http.StatusOK, "刷新缓存成功"))
 }
 
@@ -222,14 +227,14 @@ func (ic DatamapController) LoadCode(context *gin.Context) {
 }
 
 func (th DatamapController) TableSearch(context *gin.Context) {
-	// 获取env
+	// 获取configId
 	// 从缓冲中获取表名列表
-	env, exists := context.GetQuery("env")
+	configId, exists := context.GetQuery("configId")
 	if !exists {
 		panic("参数异常")
 	}
 
-	tableInfos := th.ListTableInfo(env)
+	tableInfos := th.ListTableInfo(configId)
 	tableNames := make([]string, 0)
 	for _, info := range tableInfos {
 		tableNames = append(tableNames, info.TableName)

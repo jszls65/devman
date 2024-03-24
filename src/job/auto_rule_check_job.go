@@ -2,7 +2,7 @@ package job
 
 import (
 	"database/sql"
-	"devman/config"
+	"devman/src/common/config"
 	"devman/src/common/dingtalk"
 	"devman/src/persistence"
 	"log"

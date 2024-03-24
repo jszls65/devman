@@ -3,7 +3,7 @@
 package controllers
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	"devman/src/common"
 	"devman/src/persistence"
 	"devman/src/persistence/models"

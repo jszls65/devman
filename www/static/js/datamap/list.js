@@ -19,7 +19,7 @@ function openTableSearch(){
     }
     var tableNameList = tableNamesStr.split(",");
     $.ajax({
-        url: '/datamap/table-search?env='+dataKey
+        url: '/datamap/table-search?configId='+dataKey
         ,type: 'GET'
         ,async : false
         ,headers: {'Content-Type': 'application/json'}
@@ -239,7 +239,7 @@ function initRefreshCache() {
 
         $.ajax({
             type : 'GET',
-            url : '/datamap/refreshCache?env='+dataKey,
+            url : '/datamap/refreshCache?configId='+dataKey,
             data : {},
             success : function(result) {
                 refreshRunning = false;

@@ -3,7 +3,7 @@
 package job
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	"log"
 
 	"github.com/robfig/cron/v3"

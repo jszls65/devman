@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	"log"
 
 	"gorm.io/gorm/logger"

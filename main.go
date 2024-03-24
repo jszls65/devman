@@ -1,7 +1,7 @@
 package main
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	_ "devman/src/job"
 	"devman/src/routers"
 	"github.com/gin-gonic/gin"

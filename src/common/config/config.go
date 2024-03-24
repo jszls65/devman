@@ -12,6 +12,7 @@ import (
 var Conf = new(LibraryConfig)
 
 type MysqlConfig struct {
+	Id           string
 	Env          string `mapstructure:"env"`
 	Enable       bool   `mapstructure:"enable"`
 	Host         string `mapstructure:"host"`
@@ -24,8 +25,8 @@ type MysqlConfig struct {
 }
 
 type SqliteConfig struct {
-	Path string `mapstructure:"path" json:"path"`
-	Enable       bool   `mapstructure:"enable"`
+	Path   string `mapstructure:"path" json:"path"`
+	Enable bool   `mapstructure:"enable"`
 }
 
 type RedisConfig struct {
@@ -125,9 +126,11 @@ func getEnvConfigMap(key string) (string, bool) {
 }
 
 // 根据环境变量名称获取mysql的配置
-func GetMysqlByEnv(env string) *MysqlConfig {
+func GetMysqlByEnv(configId string) *MysqlConfig {
 	for _, conf := range Conf.MysqlConfigs {
-		if conf.Env == env && conf.Enable {
+		conf.Id = conf.Env + "," + conf.DB
+		if conf.Id == configId && conf.Enable {
+			
 			return &conf
 		}
 	}

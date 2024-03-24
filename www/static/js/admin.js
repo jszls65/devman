@@ -8,17 +8,19 @@ function menuFuncTool(env, name){
     $("#iframe_body").attr("src", "/tool");
 }
 
-function menuFuncDatamap(env, name){
-        $("#iframe_body").attr("src", "/datamap?env="+env);
+function menuFuncDatamap(configId){
+        $("#iframe_body").attr("src", "/datamap?configId="+configId);
     
 }
 
-function menuFunc(menuName, fn){
+function menuFunc(configId, fn){
     // 记录上一次点击的菜单
-    window.localStorage.menuName = menuName
+    window.localStorage.menuName = configId
     window.localStorage.menuFunc = fn
-    $('#tabTitle').html(menuName);
-    eval(fn)(menuName);
+    var split = configId.split(",")
+     
+    $('#tabTitle').html(split[0] + " > " + split[1]);
+    eval(fn)(configId);
 }
 
 // 获取请求次数

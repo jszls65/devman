@@ -1,7 +1,7 @@
 package job
 
 import (
-	"devman/config"
+	"devman/src/common/config"
 	"devman/src/common/constants"
 	"devman/src/common/dingtalk"
 	"devman/src/persistence"

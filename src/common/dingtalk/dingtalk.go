@@ -4,7 +4,8 @@ package dingtalk
 
 import (
 	"bytes"
-	"devman/config"
+	"devman/src/common/config"
+
 	"encoding/json"
 	"log"
 	"net/http"
