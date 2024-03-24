@@ -1,6 +1,10 @@
 package structs
 
 type ColumnInfo struct {
+	DbName string
+
+	TableName string
+	
 	// 列名
 	TField string
 	// 数据类型

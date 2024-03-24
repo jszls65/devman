@@ -20,8 +20,7 @@ type DatamapController struct{}
 
 var tableInfoMap = make(map[string][]structsm.TableInfo) // 环境名称:数据
 var sw = sync.WaitGroup{}                                // 同步等待组
-var ch = make(chan int, 1)                               // 协程数量限制
-var createTableSqlMap = make(map[string]string)          // 建表语句缓存, key:环境-表名, value是create语句
+var createTableSqlMap = make(map[string]string) // 建表语句缓存, key:环境-表名, value是create语句
 
 // 主页面
 func (ic DatamapController) Html(c *gin.Context) {
@@ -55,7 +54,7 @@ func (ic DatamapController) refreshCache(env string) {
 	}()
 	// 查询数据
 	tableInfos := ic.ListTableInfo(env)
-	fillTableColumnInfo(env, tableInfos)
+	tableInfos = fillTableColumnInfo(env, tableInfos)
 	//tableInfoMap[env] = tableInfos
 	utils.PutMap(tableInfoMap, env, tableInfos)
 }
@@ -67,33 +66,100 @@ func fillTableColumnInfo(env string, infos []structsm.TableInfo) []structsm.Tabl
 	}
 	mysql, _ := persistence.GetMysql(env)
 	mysqlByEnv := config.GetMysqlByEnv(env)
-	for index, tableItem := range infos {
-		tableItem.DbName = mysqlByEnv.DB
+	// 对表进行分组
+	groupTableInfos := getGroupTableInfos(mysqlByEnv.DB,  infos)
+
+	// 返回值
+	resultList := []structsm.TableInfo{}
+	// 对分组变量进行遍历
+	for i := range groupTableInfos {
+		tableSubList := groupTableInfos[i]		
+
 		sw.Add(1) // 同步等待组数量
-		ch <- 1
-		go func(index int, tableItem structsm.TableInfo) {
+		go func(tableItem []structsm.TableInfo) {
 			defer sw.Done()
-			<-ch
+			tableNames := getTableNames(tableSubList)
 			// 表字段切片
 			var cols []structsm.ColumnInfo
-			// sqlStr := "SELECT \n    COLUMN_NAME Field, IS_NULLABLE `Null`, column_type  `Type`, COLUMN_COMMENT Comment, EXTRA Extra, COLUMN_KEY `Key`, column_default `Default`\nFROM\n    INFORMATION_SCHEMA.COLUMNS\nwhere " +
-			// 	"\n    TABLE_SCHEMA = '" + tableItem.DbName + "' and TABLE_NAME = '" + tableItem.TableName + "'\nORDER BY ORDINAL_POSITION;"
-
 			sqlStr := `
-				SELECT 
-    COLUMN_NAME  TField, IS_NULLABLE TNull, column_type  TType, COLUMN_COMMENT TComment, EXTRA TExtra, COLUMN_KEY TKey, column_default TDefault
-    FROM
-        INFORMATION_SCHEMA.COLUMNS
-        where    TABLE_SCHEMA = @dbName and TABLE_NAME = @tableName
-        ORDER BY ORDINAL_POSITION;
-				`
+					SELECT 
+					TABLE_SCHEMA DbName,  TABLE_NAME TableName,
+		COLUMN_NAME  TField, IS_NULLABLE TNull, column_type  TType, COLUMN_COMMENT TComment, EXTRA TExtra, COLUMN_KEY TKey, column_default TDefault
+		FROM
+			INFORMATION_SCHEMA.COLUMNS
+			where    TABLE_SCHEMA = @dbName and TABLE_NAME in @tableNames
+			ORDER BY ORDINAL_POSITION;
+					`
 			//sqlStr := "desc `" + tableItem.TableName + "`"
-			mysql.Raw(sqlStr, sql.Named("dbName", tableItem.DbName), sql.Named("tableName", tableItem.TableName)).Scan(&cols)
-			infos[index].Columns = cols
-		}(index, tableItem)
+			mysql.Raw(sqlStr, sql.Named("dbName", tableItem[0].DbName), sql.Named("tableNames", tableNames)).Scan(&cols)
+			// infos[index].Columns = cols
+			// 按表名分组字段
+			groupTableNameColMap := getGroupTableColumns(cols)
+
+			for i := range tableSubList {
+				ti := tableSubList[i]
+				v, ok := groupTableNameColMap[ti.TableName]
+				if !ok {
+					continue
+				}
+				ti.Columns = v
+				resultList = append(resultList, ti)
+			}
+		}(tableSubList)
 	}
+
 	sw.Wait()
-	return infos
+	// 上面用goroutine异步将表的顺序打乱了, 需要重新排序
+	return sortTableList(infos, resultList)
+}
+
+func getGroupTableInfos(dbName string, infos []structsm.TableInfo) [][]structsm.TableInfo {
+	groupTableInfos := [][]structsm.TableInfo{}
+	groupItemTableInfos := []structsm.TableInfo{}
+	size := 100
+	for index := range infos {
+		tableItem := infos[index]
+		tableItem.TableHeadInfo.DbName = dbName
+		groupItemTableInfos = append(groupItemTableInfos, tableItem)
+		if (index+1)%size == 0 {
+			// 将分组项数据放入分组变量中
+			groupTableInfos = append(groupTableInfos, groupItemTableInfos)
+			groupItemTableInfos = []structsm.TableInfo{}
+		}
+	}
+	return groupTableInfos
+}
+// 排序, 按照原始顺序进行排序
+func sortTableList(originList []structsm.TableInfo, targetList []structsm.TableInfo) []structsm.TableInfo {
+	targetMap := map[string]structsm.TableInfo{}
+	for i := range targetList {
+		targetItem := targetList[i]
+		targetMap[targetItem.TableName] = targetItem
+	}
+	list := []structsm.TableInfo{}
+	for i := range originList {
+		tableName := originList[i].TableName
+		list = append(list, targetMap[tableName])
+	}
+	return list
+}
+
+func getGroupTableColumns(cols []structsm.ColumnInfo) map[string][]structsm.ColumnInfo {
+	groupTableNameColMap := map[string][]structsm.ColumnInfo{}
+	for _, ci := range cols {
+		tableName := ci.TableName
+		val, ok := groupTableNameColMap[tableName]
+		if ok {
+			val = append(val, ci)
+			groupTableNameColMap[tableName] = val
+			continue
+		}
+		// 如果不存在
+		firstItem := []structsm.ColumnInfo{}
+		firstItem = append(firstItem, ci)
+		groupTableNameColMap[tableName] = firstItem
+	}
+	return groupTableNameColMap
 }
 
 // 查询所有表的表名和表注释列表
@@ -109,8 +175,8 @@ func (ic DatamapController) ListTableInfo(env string) []structsm.TableInfo {
 	mysql.Raw(sqlStr, sql.Named("dbName", dbName)).Scan(&tableMiniInfos)
 
 	var tableInfos []structsm.TableInfo
-	for _, info := range tableMiniInfos{
-		t:= structsm.TableInfo{}
+	for _, info := range tableMiniInfos {
+		t := structsm.TableInfo{}
 		t.TableName = info.TableName
 		t.TableComment = info.TableComment
 		tableInfos = append(tableInfos, t)
@@ -205,4 +271,12 @@ type Result struct {
 	ConfigId   int
 	ConfigName string
 	ConfigKey  string
+}
+
+func getTableNames(tables []structsm.TableInfo) []string {
+	tableNames := []string{}
+	for _, item := range tables {
+		tableNames = append(tableNames, item.TableName)
+	}
+	return tableNames
 }
