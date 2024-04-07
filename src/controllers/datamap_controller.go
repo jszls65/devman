@@ -130,6 +130,9 @@ func getGroupTableInfos(dbName string, infos []structsm.TableInfo) [][]structsm.
 			groupItemTableInfos = []structsm.TableInfo{}
 		}
 	}
+	if len(groupItemTableInfos) > 0{
+        groupTableInfos = append(groupTableInfos, groupItemTableInfos)
+    }
 	return groupTableInfos
 }
 

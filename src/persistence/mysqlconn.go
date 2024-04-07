@@ -19,7 +19,7 @@ func init() {
 	_dbMap = make(map[string]*gorm.DB)
 
 	for _, mysqlconfig := range mysqlconfigs {
-		dsn := mysqlconfig.User + ":" + mysqlconfig.Password + "@tcp(" + mysqlconfig.Host + ":3306)/" + mysqlconfig.DB + "?charset=utf8mb4&parseTime=True&loc=Local"
+		dsn := mysqlconfig.User + ":" + mysqlconfig.Password + "@tcp(" + mysqlconfig.Host + ")/" + mysqlconfig.DB + "?charset=utf8mb4&parseTime=True&loc=Local"
 		_db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Fatalln("连接数据库失败: ", err)

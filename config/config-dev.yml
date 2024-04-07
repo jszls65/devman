@@ -40,24 +40,21 @@ mysqls:
   - env: prod    
     db: smart_test
     enable: true
-    host: localhost
-    port: 3306
+    host: localhost:3306
     user: root
     password: 123456
     
   - env: prod
     db: cmswing
     enable: true
-    host: localhost
-    port: 3306
+    host: localhost:3306
     user: root
     password: 123456
 
   - env: test
     db: cmswing
     enable: true
-    host: localhost
-    port: 3306
+    host: localhost:3306
     user: root
     password: 123456
 
