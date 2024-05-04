@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -237,7 +238,11 @@ func (th DatamapController) TableSearch(context *gin.Context) {
 		panic("参数异常")
 	}
 
-	tableInfos := th.ListTableInfo(configId)
+	tableInfos,ok := tableInfoMap[configId]
+	if !ok {
+		time.Sleep(1*time.Second)
+	}
+	// tableInfos := th.ListTableInfo(configId)
 	tableNames := make([]string, 0)
 	for _, info := range tableInfos {
 		tableNames = append(tableNames, info.TableName)

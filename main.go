@@ -2,11 +2,11 @@ package main
 
 import (
 	"devman/src/common/config"
-	_ "devman/src/job"
 	"devman/src/routers"
-	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {

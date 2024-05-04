@@ -23,17 +23,9 @@ function menuFunc(configId, fn){
     eval(fn)(configId);
 }
 
-// 获取请求次数
-function getRequestCount(){
-    $.get("/log/sum", {}, function (data) {
-        $('#sum').html(data.data)
-    });
-}
-
 // 获取sqlite数据库是否开启
 function getSqliteDbOpen(){
     $.get("/alert/sdb-open", {}, function(data){
-        console.log(data)
         if(!data){
             // 把菜单隐藏
             $("#menuFuncAlertDl").hide();

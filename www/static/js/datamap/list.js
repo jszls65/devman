@@ -24,27 +24,24 @@ function openTableSearch(){
         ,async : false
         ,headers: {'Content-Type': 'application/json'}
         ,success: function (str){
-            openTableSearchId = layui.layer.open({
+            openTableSearchId = layer.open({
                 title: '<a href="#topM" title="回到顶部">表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' +
                     '<i class="layui-icon layui-icon-up"></i></a> '
-                // ,content: "str"
                 ,content: str
+                ,type: 1 
                 ,id: '1221212121'
                 ,shade:0
                 ,offset:'rt'
                 ,area: ['300px', '585px']
-                ,btn:[]
                 ,maxmin:false
-                ,move: false
-                // ,closeBtn: 0
+                // ,move: false
+                ,closeBtn: 0
                 ,restore: function () {
-                    console.log(9999)
                 }
                 ,success: function(layero, index){
 
                 }
             });
-            console.log("openTableSearchId:"+openTableSearchId)
             openTableSearchRunning = false
         }
         ,complete: function (){
@@ -239,7 +236,7 @@ function initRefreshCache() {
 
         $.ajax({
             type : 'GET',
-            url : '/datamap/refreshCache?configId='+dataKey,
+            url : '/datamap/refresh-cache?configId='+dataKey,
             data : {},
             success : function(result) {
                 refreshRunning = false;

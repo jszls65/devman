@@ -210,7 +210,6 @@ function getInputContentFieldList(){
         }
         line = line.trim();
         var getMethodName = "g"+line.substring(line.indexOf(".") + 2, line.lastIndexOf(")") + 1);
-        console.log(getMethodName);
         var replace = line.replace(")", "");
         var newLine = replace + targetName + "." + getMethodName + ");";
         newLines.push(newLine);
@@ -384,7 +383,6 @@ function mergeRequst() {
     privateBranch = privateBranch.replaceAll('/', '%2F');
     targetBranch = targetBranch.replaceAll('/', '%2F');
     var url = "http://101.37.39.148:20080/smartgroup/smartadjava/-/merge_requests/new?merge_request%5Bsource_branch%5D="+ privateBranch +"&merge_request%5Btarget_branch%5D=" + targetBranch+"&merge_request[assignee_ids][]="+assignee_ids+"&merge_request[force_remove_source_branch]=1";
-    console.log("url: "+ url);
     window.open(url);
     reqlog("MR")
 }
@@ -453,13 +451,6 @@ function reqlog(event){
     $.get("/log/save", {event: event}, function (data) {
     });
 }
-
-function sum(){
-    $.get("/log/sum", {}, function (data) {
-        $('#sum').html(data.data)
-    });
-}
-
 
 function cacheInput(obj) {
     window.localStorage.inputContent = $(obj).val();

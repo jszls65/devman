@@ -1,51 +1,15 @@
-mode: "dev"
 port: 8559
-
-job:
-  enable: false
-  alive_check: "*/15 * * * * *"
-#  auto_rule: "*/15 * * * * *"    # 每小时10分检测自动化日志有没有生成
-  auto_rule: "0 10 0/1 * * ? "    # 每小时10分检测自动化日志有没有生成
-
-# 钉钉消息
-ding_talk:
-  enable: false
-  url: 
-  alert_duration: 2 # 单位: 分钟
-  next_duration: 60 # 单位: 分钟 第一次发送消息后, 每个n分钟再次发消息.
-
-nacos_service:
-  list:
-    - wimoor-auth: 1
-    - wimoor-admin: 1
-    - wimoor-amazon: 2
-    - wimoor-gateway: 1
-    - wimoor-erp: 1
-    - wimoor-amazon-adv: 2
-
-
-
-log:
-  level: "debug"
-  filename: "./log/logfile.log"
-  max_size: 1000
-  max_age: 3600
-  max_backups: 5
-
-sqlite:
-  enable: false
-  path: "../devman.db"
 
 mysqls:
   - env: prod    
-    db: smart_test
+    db: xxl-job
     enable: true
     host: localhost:3306
     user: root
     password: 123456
     
-  - env: prod
-    db: cmswing
+  - env: prod    
+    db: smart-ad
     enable: true
     host: localhost:3306
     user: root
@@ -53,12 +17,7 @@ mysqls:
 
   - env: test
     db: cmswing
-    enable: true
+    enable: false
     host: localhost:3306
     user: root
     password: 123456
-
-redis:
-  host: 127.0.0.1
-  port: 6379
-  db: 0

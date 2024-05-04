@@ -1,6 +1,6 @@
 // @Title
 // @Author  zls  2023/10/15 23:30
-package dateutils
+package utils
 
 import (
 	"time"

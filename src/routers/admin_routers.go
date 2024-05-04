@@ -7,10 +7,9 @@ import (
 )
 
 func AdminRouterInit(g *gin.Engine) {
-	group := g.Group("/admin")
+	group := g.Group("/")
 
 	group.GET("/", controllers.AdminController{}.Html)
 	group.GET("/welcome", controllers.AdminController{}.Welcome)
-	group.GET("/dl", controllers.FileController{}.DownloadFile)
 
 }

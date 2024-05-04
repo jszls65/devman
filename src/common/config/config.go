@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -24,55 +23,10 @@ type MysqlConfig struct {
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 }
 
-type SqliteConfig struct {
-	Path   string `mapstructure:"path" json:"path"`
-	Enable bool   `mapstructure:"enable"`
-}
-
-type RedisConfig struct {
-	Host         string `mapstructure:"host"`
-	Port         int    `mapstructure:"port"`
-	DB           int    `mapstructure:"db"`
-	Password     string `mapstructure:"password"`
-	PollSize     int    `mapstructure:"PollSize"`
-	MinIdleConns int    `mapstructure:"min_idle_cons"`
-}
-type LogConfig struct {
-	Level      string `mapstructure:"level"`
-	FileName   string `mapstructure:"filename"`
-	MaxSize    int    `mapstructure:"max_size"`
-	MaxAge     int    `mapstructure:"max_age"`
-	MaxBackUps int    `mapstructure:"max_backups"`
-}
-
-type DingTalk struct {
-	Url           string        `mapstructure:"url"`
-	AlertDuration float64       `mapstructure:"alert_duration"`
-	NextDuration  time.Duration `mapstructure:"next_duration"`
-	Enable        bool          `mapstructure:"enable"`
-}
-
-type Job struct {
-	Enable     bool   `mapstructure:"enable"`
-	AliveCheck string `mapstructure:"alive_check"`
-	AutoRule   string `mapstructure:"auto_rule"`
-}
-
-type NacosService struct {
-	List []map[string]int `mapstructure:"list"`
-}
-
 // 总结构体
 type LibraryConfig struct {
-	Mode          string `mapstructure:"mode"`
-	Port          int    `mapstructure:"port"`
-	*LogConfig    `mapstructure:"log"`
-	MysqlConfigs  []MysqlConfig `mapstructure:"mysqls"`
-	*RedisConfig  `mapstructure:"redis"`
-	*SqliteConfig `mapstructure:"sqlite"`
-	*DingTalk     `mapstructure:"ding_talk"`
-	*Job          `mapstructure:"job"`
-	*NacosService `mapstructure:"nacos_service"`
+	Port         int           `mapstructure:"port"`
+	MysqlConfigs []MysqlConfig `mapstructure:"mysqls"`
 }
 
 func init() {
@@ -130,7 +84,7 @@ func GetMysqlByEnv(configId string) *MysqlConfig {
 	for _, conf := range Conf.MysqlConfigs {
 		conf.Id = conf.Env + "," + conf.DB
 		if conf.Id == configId && conf.Enable {
-			
+
 			return &conf
 		}
 	}
