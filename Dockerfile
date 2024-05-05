@@ -1,13 +1,12 @@
-#!/bin/bash
 FROM alpine
-MAINTAINER jszls65@icloud.com
+MAINTAINER jszls65@qq.com
 CMD ["/bin/sh"]
-RUN mkdir -p /app/alertman
-WORKDIR /app/alertman
-COPY ../devman /app/alertman/
-COPY ../www /app/alertman/www
-COPY script /app/alertman/script
-COPY ../config /app/alertman/config
-WORKDIR /app/alertman
+WORKDIR /app
+COPY ../devman /app
+COPY ../www /app/www
+COPY script /app/script
+COPY ../config /app/config
+RUN chmod +x /app/devman
 EXPOSE 8559
-ENTRYPOINT ["./devman", "&"]
+# ENTRYPOINT ["/app/devman", "&"]
+CMD ["/app/devman", "&"]

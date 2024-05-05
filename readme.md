@@ -34,21 +34,17 @@
 
 ## 背景
 
-### 1 元数据查看
+### 元数据全局展示
 
 场景一: 在做技术设计的时候, 经常需要查看表结构, 每次都要打开Navicat图形工具查看, 操作相对繁琐. 
 
 场景二: 非开发人员需要查看表结构信息, 比如数据分析人员需要了解业务部门的底层数据关系, 在不需要授权的情况下, 可以直接查看库表结构.  
 
-### 2 服务监控告警
-当然, 如果团队中有专业的运维人员, 直接上zabbix或者Prometheus, 完全可以应对企业开发中的各种复杂监控场景.
-如果是小团队的开发人员想要应急, 需要一个简单实用的监控告警工具, 就没必要上笨重的监控框架了, 而且学习成本非常高.
-它仅是一个简单不多的HttpClient, 通过自定义的定时规则检查接口是否成功响应而已, 如此简单.
 
 
 ## 项目介绍
 ### 功能
-为了解决上面出现的问题, 所以本项目开发了2个重要的功能
+为了解决上面出现的问题, 所以本项目开发了该功能
 #### 1 元数据
 
 ![](www/static/img/devman01.png)
@@ -56,13 +52,6 @@
 - 数据库表结构全局展示
 - 支持单表分享
 - 支持查看DDL建库脚本
-
-#### 2 监控告警
-
-![](www/static/img/devman02.png)
-
-- 监控任务维护
-- 钉钉群机器人实时告警, 支持@人
 
 
 ## 开始
@@ -75,8 +64,7 @@
 │   ├── boot.yml
 │   ├── config-dev.yml
 │   ├── config-prod.yml
-│   ├── config-test.yml
-│   └── config.go
+│   └── config-test.yml
 ├── main.go // 程序入口
 ├── script // 脚本文件
 ├── src  // 后端代码
@@ -101,10 +89,22 @@
 ```
 
 ### 部署
-> 前提: 本项目使用sqlite数据库, 本地先创建一个数据库文件`devman.db`, 并执行`sqlite.sql`文件中的语句.
 
 
-#### 1 本地运行
+#### 方式一、本地运行
+- 修改配置
+config-dev.yml
+```yaml
+mysqls:  # db类型，后续支持pg、oracle等主流db
+  - env: 生产环境   # 一级菜单 
+    db: my_erpdb  # db名称  及二级菜单
+    enable: true  # 是否开启
+    host: localhost:3306  # db ip:端口
+    user: root # db用户名
+    password: 123456  # db密码
+```
+
+- 执行命令
 ```shell
 # clone代码
 go mod init devman
@@ -112,15 +112,48 @@ go mod tidy
 go build
 ./devman
 ```
-启动成功后, 访问`http://localhost:8559/admin`
+启动成功后, 访问`http://localhost:8559`
 
-#### 2 部署到Linux
+
+#### 方式二、Docker部署【推荐👍】
+
+- 本地配置：以mac os为例
+```shell
+mkdir -p ~/devman/config
+```
+将项目中的`./config`目录下的2个配置文件复制过去，并修改其中的数据库配置。修改内容参考上面的方式一
+
+**支持多环境配置**
+
+修改 `boot.yml` 中的`env: dev`示例：
+```shell
+env:dev  # 对应的config文件为：config-dev.yml
+或
+env:test  # 对应的config文件为：config-test.yml  
+或
+env:prod  # 对应的config文件为：config-prod.yml
+```
+
+
+- 拉取镜像
+```shell
+docker pull devman:1.0  # 或者tag:latest
+```
+- 运行
+```shell
+# 将命令中的“yourlocalpath”改成你的路径
+docker run --name devman_7.1 -p 8559:8559 -v yourlocalpath:/app/config  -d devman:1.0
+```
+
+
+
+#### 方式三、原生部署
 1. 本地打包
 ```shell
-# 本地打包
+# 本地打包，打包成linux上可运行的二进制包
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 ```
-2. 将devman二进制文件, www和conf两个目录打包上传服务器
+2. 将devman二进制文件, www和conf两个目录打包上传服务器。
 
 3. 在服务器上解压并运行
 
@@ -136,9 +169,10 @@ drwxr-xr-x 4 root root     4096 Sep 15 10:53 www/
 ```shell
 nohup ./devman &
 ```
-启动成功后, 访问`http://localhost:8559/admin`
+启动成功后, 访问`http://localhost:8559`
 
 
+注意：服务器上的config目录应该手动维护，不建议每次打包的时候都将本地的改动覆盖服务器上的配置。所以第一次部署时，请关注服务器上的config目录下配置文件是存在，如果不存在，请手动拷贝项目中的文件，并根据实际情况修改对应的配置。
 
 
 # 最后
