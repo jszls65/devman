@@ -161,8 +161,6 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 ```shell
 drwxr-xr-x 2 root root     4096 Jan 16 15:01 config/
 -rwxr-xr-x 1 root root 26531274 Jan 16 15:22 devman
--rw-r--r-- 1 root root  1626112 Jan 17 14:49 devman.db
--rw------- 1 root root  3969202 Jan 17 14:10 nohup.out
 drwxr-xr-x 4 root root     4096 Sep 15 10:53 www/
 ```
 启动服务
