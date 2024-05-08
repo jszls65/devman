@@ -142,7 +142,7 @@ docker pull jszls65/devman
 - 运行
 ```shell
 # 将命令中的“~/devman/config”改成你的路径
-docker run --name devman_7.1 -p 8559:8559 -v ~/devman/config:/app/config  -d devman
+docker run --name devman_c -p 8559:8559 -v ~/devman/config:/app/config  -d jszls65/devman
 ```
 
 
