@@ -137,12 +137,12 @@ env:prod  # 对应的config文件为：config-prod.yml
 
 - 拉取镜像
 ```shell
-docker pull devman:1.0  # 或者tag:latest
+docker pull jszls65/devman
 ```
 - 运行
 ```shell
-# 将命令中的“yourlocalpath”改成你的路径
-docker run --name devman_7.1 -p 8559:8559 -v yourlocalpath:/app/config  -d devman:1.0
+# 将命令中的“~/devman/config”改成你的路径
+docker run --name devman_7.1 -p 8559:8559 -v ~/devman/config:/app/config  -d devman
 ```
 
 

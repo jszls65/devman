@@ -174,8 +174,8 @@ func getGroupTableColumns(cols []structsm.ColumnInfo) map[string][]structsm.Colu
 func (ic DatamapController) ListTableInfo(configId string) []structsm.TableInfo {
 	dbName := strings.Split(configId, ",")[1]
 	sqlStr := `select
-			table_name,
-			table_comment
+		TABLE_NAME,
+		TABLE_COMMENT
 		from information_schema.tables where TABLE_SCHEMA = @dbName;`
 	mysql, _ := persistence.GetMysql(configId)
 	// 查询结果
