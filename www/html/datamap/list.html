@@ -84,9 +84,7 @@
     <button id="copyUrl" style="display:none;"></button>
     <div class="">
         <a name="topM" id="topM">
-            <!-- <div class="catalogue-box" id="catalogueBox" onclick="openTableSearch()">
-                <i class="layui-icon layui-icon-form" id="catalogueTip"  title="目录"></i>
-            </div> -->
+         
             <div class="layui-btn-container">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-warm "  id="refreshCache">刷新缓存</button>
             </div>
@@ -98,12 +96,15 @@
     <div >
         <!--<h1 >表</h1>-->
         <div style="margin-left:10px;">
-            <h2> </h2>
             {{ range $index,$tab := .tableInfos}}
+            <a name="{{$tab.TableName}}" > &nbsp;</a>
             <div class="level-2-div">
-                <a name="{{$tab.TableName}}"><h3  style="float: left;" title="{{$tab.TableName}}">{{$tab.TableName}}</h3></a>
-<!--                <span class="layui-badge layui-bg-gray tableCommentSpan" title="{{$tab.TableComment}}">好的</span>-->
-                <span class="layui-badge layui-bg-gray tableCommentSpan" title="{{$tab.TableComment}}">{{$tab.TableComment}}</span>
+              
+                <span class="layui-breadcrumb" lay-separator="-">
+                    <a title="{{$tab.TableName}}" style="font-size: 21px;"><cite>{{$tab.TableName}}</cite></a>
+                    <a title="{{$tab.TableComment}}"><cite>{{$tab.TableComment}}</cite></a>                
+                  </span>
+            
                 <div class="table_head">
                     <span style="color: #AAAAAA;" ></span>
                     <span style="color: #AAAAAA;" ></span>

@@ -186,7 +186,12 @@ func (ic DatamapController) ListTableInfo(configId string) []structsm.TableInfo 
 	for _, info := range tableMiniInfos {
 		t := structsm.TableInfo{}
 		t.TableName = info.TableName
-		t.TableComment = info.TableComment
+		if info.TableComment != ""{
+			t.TableComment = info.TableComment
+		}else{
+			t.TableComment = "无备注"
+		}
+		
 		tableInfos = append(tableInfos, t)
 	}
 	return tableInfos
