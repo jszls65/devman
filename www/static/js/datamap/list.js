@@ -25,8 +25,7 @@ function openTableSearch(){
         ,headers: {'Content-Type': 'application/json'}
         ,success: function (str){
             openTableSearchId = layer.open({
-                title: '<a href="#topM" title="回到顶部">表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' +
-                    '<i class="layui-icon layui-icon-up"></i></a> '
+                title: '<a>表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' + '</a> '
                 ,content: str
                 ,type: 1 
                 ,id: '1221212121'
