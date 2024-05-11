@@ -32,10 +32,10 @@ function openTableSearch(){
                 ,id: '1221212121'
                 ,shade:0
                 ,offset:'rt'
-                ,area: ['300px', '585px']
+                ,area: ['300px', '100%']
                 ,maxmin:false
                 // ,move: false
-                ,closeBtn: 0
+                ,closeBtn: 1
                 ,restore: function () {
                 }
                 ,success: function(layero, index){
