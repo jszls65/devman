@@ -264,10 +264,16 @@ function showCreateTable(tableName){
         ,shade: 0.01
     });
     showCreateTableRunning = true;
-    var env = $('#dataKey').val()
+    var env = $('#dataKey').val() 
+    var url = '';
+    if( (env || '') == '' ){
+        url = window.location.href.split("?")[1]
+    }else{
+        url = 'env='+env+'&tableName='+tableName;
+    }
 
     $.ajax({
-        url: '/datamap/load-code?env='+env+'&tableName='+tableName
+        url: '/datamap/load-code?'+url
         ,type: 'GET'
         ,async : true
         ,headers: {'Content-Type': 'application/json'}
