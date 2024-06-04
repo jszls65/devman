@@ -25,7 +25,7 @@ function openTableSearch(){
         ,headers: {'Content-Type': 'application/json'}
         ,success: function (str){
             openTableSearchId = layer.open({
-                title: '<a>表名检索 <span class="layui-badge">'+tableNameList.length+'</span> ' + '</a> '
+                title: '<a>表名检索 <span id="tableCount" class="layui-badge">'+tableNameList.length+'</span> ' + '</a> '
                 ,content: str
                 ,type: 1 
                 ,id: '1221212121'
@@ -170,22 +170,25 @@ function dealWithMaxLayer() {
  * 搜索目录
  */
 function searchCatalogue() {
-    var text = $('#searchBox').val();
+    var text = $('#searchBox').val() || '';
     text = text.toLowerCase();
     var catalogues = $('div[class="catalogue-list"] a');
-    if (catalogues.length <= 0) {
+    if (catalogues.length <= 0 || text == '') {
         return;
     }
+    var tableCount = 0;  // 统计搜索结果中表的数量
     for (var i = 0; i < catalogues.length; i++) {
         var tableName = $(catalogues[i]).html();
         tableName = tableName.toLowerCase();
         var tableNameNew = tableName.replaceAll('_','');
         if (tableName.indexOf(text) != -1 || tableNameNew.indexOf(text) != -1) {
             $(catalogues[i]).parent().show();
+            tableCount++;
         } else {
             $(catalogues[i]).parent().hide();
         }
     }
+    $('#tableCount').html(tableCount);
 }
 
 /**
