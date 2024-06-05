@@ -3,6 +3,7 @@ package main
 import (
 	"devman/src/common/config"
 	"devman/src/routers"
+	"devman/src/templatefuns"
 	"log"
 	"strconv"
 
@@ -12,6 +13,8 @@ import (
 func main() {
 	//func main4() {
 	g := gin.Default()
+	// 初始化模板函数
+	templatefuns.InitTemplateHandler(g)
 	// html
 	g.LoadHTMLGlob("./www/html/**/*")
 	// 静态文件

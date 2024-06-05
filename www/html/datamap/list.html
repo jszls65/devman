@@ -119,6 +119,7 @@
 
                 <table class="layui-table" lay-size="sm" lay-filter="123">
                     <colgroup>
+                        <col width="40">
                         <col width="100">
                         <col width="100">
                         <col width="100">
@@ -130,6 +131,7 @@
                     <thead>
 
                     <tr>
+                        <th>序号</th>
                         <th lay-data="{field:'tField', sort:true}">列名(Field)</th>
                         <th lay-data="{field:'tType', sort:true}">类型(Type)</th>
                         <th lay-data="{field:'tNull', sort:true}">可为空(Null)</th>
@@ -144,6 +146,7 @@
 
                     {{range $index,$col := $tab.Columns}}
                     <tr >
+                        <td >{{indexAddOne $index}}</td>
                         <td >{{$col.TField}}</td>
                         <td >{{$col.TType}}</td>
                         <td >{{$col.TNull}}</td>
