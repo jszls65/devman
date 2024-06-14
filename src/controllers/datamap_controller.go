@@ -42,6 +42,7 @@ func (ic DatamapController) Html(c *gin.Context) {
 	for _, tab := range tableInfos {
 		tableNames = append(tableNames, tab.TableName)
 	}
+
 	c.HTML(200, "datamap/list.html", gin.H{
 		"tableInfos": tableInfos,
 		"tableNames": strings.Join(tableNames, ","),
@@ -131,9 +132,9 @@ func getGroupTableInfos(dbName string, infos []structsm.TableInfo) [][]structsm.
 			groupItemTableInfos = []structsm.TableInfo{}
 		}
 	}
-	if len(groupItemTableInfos) > 0{
-        groupTableInfos = append(groupTableInfos, groupItemTableInfos)
-    }
+	if len(groupItemTableInfos) > 0 {
+		groupTableInfos = append(groupTableInfos, groupItemTableInfos)
+	}
 	return groupTableInfos
 }
 
@@ -186,12 +187,12 @@ func (ic DatamapController) ListTableInfo(configId string) []structsm.TableInfo 
 	for _, info := range tableMiniInfos {
 		t := structsm.TableInfo{}
 		t.TableName = info.TableName
-		if info.TableComment != ""{
+		if info.TableComment != "" {
 			t.TableComment = info.TableComment
-		}else{
+		} else {
 			t.TableComment = "无备注"
 		}
-		
+
 		tableInfos = append(tableInfos, t)
 	}
 	return tableInfos
@@ -243,9 +244,9 @@ func (th DatamapController) TableSearch(context *gin.Context) {
 		panic("参数异常")
 	}
 
-	tableInfos,ok := tableInfoMap[configId]
+	tableInfos, ok := tableInfoMap[configId]
 	if !ok {
-		time.Sleep(1*time.Second)
+		time.Sleep(1 * time.Second)
 	}
 	// tableInfos := th.ListTableInfo(configId)
 	tableNames := make([]string, 0)

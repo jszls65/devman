@@ -1,0 +1,43 @@
+{{ define "nacos/nacos_config.html"}}
+<html lang="en">
+
+<head>
+    {{ template "common/page_head.html" . }} 
+    <style>
+        pre.prettyprint{
+            padding-left: 40px;
+        }
+        pre.prettyprint ol.linenums li {
+            list-style-type: decimal;
+        }
+    </style>
+</head>
+
+<body style="margin-left: 0px;">
+
+    <div>
+        <div style="margin-left:10px;">
+            {{ range $item := .nacosConfigs}}
+            <!-- 循环体 开始-->             
+            <div class="layui-collapse" lay-filter="test">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">{{$item.Name}}</h2>
+                    <div class="layui-colla-content layui-show">                    
+                        <pre class="prettyprint linenums" lay-title="">{{$item.Content}}</pre>
+                    </div>
+                </div>
+            </div>
+            <!-- 循环体 结束-->
+            {{else}}
+                无数据
+            {{end}}
+        </div>
+    </div>
+
+    <script>
+        // 加载 代码高亮
+        prettyPrint();    
+    </script>
+</body>
+</html>
+{{ end }}

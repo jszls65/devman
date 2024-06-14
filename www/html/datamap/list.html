@@ -168,8 +168,6 @@
     </div>
    
 </div>
-
-</body>
 <script>
     // 复制链接对象
     var copyBtn;
@@ -179,7 +177,7 @@
     var layuiForm;
     var loadOnId;
     //JavaScript代码区域
-    layui.use(['element', 'util', 'table', 'layer', 'form','code'], function(){
+    layui.use(['util','layer', 'form'], function(){
         var util = layui.util;
         listLayer = layui.layer;
         layuiForm = layui.form;
@@ -203,5 +201,7 @@
     initCopyUrl()
 
 </script>
+</body>
+
 </html>
 {{ end }}

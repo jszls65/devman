@@ -173,7 +173,7 @@ function searchCatalogue() {
     var text = $('#searchBox').val() || '';
     text = text.toLowerCase();
     var catalogues = $('div[class="catalogue-list"] a');
-    if (catalogues.length <= 0 || text == '') {
+    if (catalogues.length <= 0) {
         return;
     }
     var tableCount = 0;  // 统计搜索结果中表的数量

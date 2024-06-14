@@ -3,12 +3,21 @@ package config
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
 var Conf = new(LibraryConfig)
+
+// 总结构体
+type LibraryConfig struct {
+	Port         int           `mapstructure:"port"`
+	MysqlConfigs []MysqlConfig `mapstructure:"mysqls"`
+	NacosAuths []NacosAuth `mapstructure:"nacos_auths"`
+	NacosGroups []NacosGroupInfo `mapstructure:"nacos_groups"`
+}
 
 type MysqlConfig struct {
 	Id           string
@@ -23,10 +32,18 @@ type MysqlConfig struct {
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 }
 
-// 总结构体
-type LibraryConfig struct {
-	Port         int           `mapstructure:"port"`
-	MysqlConfigs []MysqlConfig `mapstructure:"mysqls"`
+
+type NacosAuth struct {
+	Env          string `mapstructure:"env"`
+	AccessKey         string `mapstructure:"accessKey"`
+	SecretKey         string `mapstructure:"secretKey"`
+	IpAddr     string `mapstructure:"ipAddr"`
+	Port         int    `mapstructure:"port"`
+}
+
+type NacosGroupInfo struct{
+	Group string `mapstructure:"group"`
+	DataIdsStr string `mapstructure:"dataIds"`
 }
 
 func init() {
@@ -101,4 +118,14 @@ func ListEnableMysqlConfig() []MysqlConfig {
 		list = append(list, conf)
 	}
 	return list
+}
+
+
+func GetNacosDataIds(group string) []string{
+	for _, v := range Conf.NacosGroups {
+		if v.Group == group{
+			return strings.Split(v.DataIdsStr, ",")
+		}
+	}
+	return make([]string, 0)
 }

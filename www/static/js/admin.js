@@ -4,6 +4,13 @@ function menuFuncAlert(env, name){
 }
 
 
+function menuFuncNacosConfig(menuName){
+    var namespace = menuName.split(',')[0]
+    var group = menuName.split(',')[1]
+    $("#iframe_body").attr("src", "/nacos_config?namespace="+namespace+"&group="+group);
+}
+
+
 function menuFuncTool(env, name){
     $("#iframe_body").attr("src", "/tool");
 }

@@ -1,7 +1,5 @@
 var tableVar;
 
-moment.locale('zh-cn')
-
 function dataTableInit(){
     layui.use('table', function(){
         //第一个实例
@@ -39,16 +37,12 @@ function dataTableInit(){
                     }
                 }}
                 ,{field: 'last_fail_time', title: '上次失败', width: 120,templet: function (row){
-                        var calendar = moment(row.last_fail_time, "YYYY-MM-DD HH:mm").calendar();
-                        if(calendar.startsWith("0001")){
-                            return "";
-                        }
+                     
                         return formatDate(row.last_fail_time);
                     }}
                 ,{field: 'owner', title: '负责人', width:80}
                 ,{field: 'create_time', title: '创建日期', width: 120, sort: false,templet: function (row){
                         return formatDate(row.create_time)
-                        // return moment(row.create_time, "YYYY-MM-DD HH:mm").calendar();
                     }}
                 ,{field: 'update_time', title: '更新日期', width: 120, sort: false,templet: function (row){
                     return formatDate(row.update_time)
@@ -72,7 +66,6 @@ function search(){
         }
         ,page: false
     }); //只重载数据
-    moment.locale('zh-cn');
     reloadSwitchRefresh(taskRunFlag)
 }
 
