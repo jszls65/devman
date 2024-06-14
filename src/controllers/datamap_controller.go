@@ -241,7 +241,9 @@ func (th DatamapController) TableSearch(context *gin.Context) {
 	// 从缓冲中获取表名列表
 	configId, exists := context.GetQuery("configId")
 	if !exists {
-		panic("参数异常")
+		log.Println("参数异常")
+		context.HTML(http.StatusOK, "datamap/tablesearch.html", gin.H{})
+		return
 	}
 
 	tableInfos, ok := tableInfoMap[configId]

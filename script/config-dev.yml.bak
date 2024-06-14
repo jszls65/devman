@@ -1,0 +1,32 @@
+port: 8559
+
+mysqls:
+  - env: 测试环境
+    db: dbname01
+    enable: true
+    host: localhost:3306
+    user: root
+    password: root
+  - env: 测试环境
+    db: dbname02
+    enable: true
+    host: localhost:3306
+    user: root
+    password: root
+
+nacos_auths: 
+  - env: 测试环境
+    accessKey: 123
+    secretKey: 123
+    ipAddr: mse.aliyuncs.com
+    port: 8848
+
+nacos_groups:
+  - group: COMMON_GROUP    
+    dataIds: common-sentinel-config.yml,common-log-config.properties,common-arthas-config.properties,common-kafka-config.properties,common-file-storage.properties,common-eureka-config.properties
+  - group: BaseServer    
+    dataIds: app.properties,main.properties
+  - group: OrderServer    
+    dataIds: app.properties,main.properties
+  - group: financeServer    
+    dataIds: app.properties,system.properties,gray.properties,third-platform.properties
