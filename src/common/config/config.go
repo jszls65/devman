@@ -13,10 +13,17 @@ var Conf = new(LibraryConfig)
 
 // 总结构体
 type LibraryConfig struct {
-	Port         int           `mapstructure:"port"`
-	MysqlConfigs []MysqlConfig `mapstructure:"mysqls"`
-	NacosAuths []NacosAuth `mapstructure:"nacos_auths"`
-	NacosGroups []NacosGroupInfo `mapstructure:"nacos_groups"`
+	Port         int              `mapstructure:"port"`
+	MysqlConfigs []MysqlConfig    `mapstructure:"mysqls"`
+	NacosAuths   []NacosAuth      `mapstructure:"nacos_auths"`
+	NacosGroups  []NacosGroupInfo `mapstructure:"nacos_groups"`
+	Reids        RedisConfig      `mapstructure:"redis"`
+}
+
+type RedisConfig struct {
+	Addr     string `mapstructure:"addr"`
+	Password string `mapstructure:"password"`
+	DbIndex  int    `mapstructure:"dbIndex"`
 }
 
 type MysqlConfig struct {
@@ -32,17 +39,16 @@ type MysqlConfig struct {
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 }
 
-
 type NacosAuth struct {
-	Env          string `mapstructure:"env"`
-	AccessKey         string `mapstructure:"accessKey"`
-	SecretKey         string `mapstructure:"secretKey"`
-	IpAddr     string `mapstructure:"ipAddr"`
-	Port         int    `mapstructure:"port"`
+	Env       string `mapstructure:"env"`
+	AccessKey string `mapstructure:"accessKey"`
+	SecretKey string `mapstructure:"secretKey"`
+	IpAddr    string `mapstructure:"ipAddr"`
+	Port      int    `mapstructure:"port"`
 }
 
-type NacosGroupInfo struct{
-	Group string `mapstructure:"group"`
+type NacosGroupInfo struct {
+	Group      string `mapstructure:"group"`
 	DataIdsStr string `mapstructure:"dataIds"`
 }
 
@@ -120,10 +126,9 @@ func ListEnableMysqlConfig() []MysqlConfig {
 	return list
 }
 
-
-func GetNacosDataIds(group string) []string{
+func GetNacosDataIds(group string) []string {
 	for _, v := range Conf.NacosGroups {
-		if v.Group == group{
+		if v.Group == group {
 			return strings.Split(v.DataIdsStr, ",")
 		}
 	}

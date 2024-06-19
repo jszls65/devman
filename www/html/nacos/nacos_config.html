@@ -2,41 +2,137 @@
 <html lang="en">
 
 <head>
-    {{ template "common/page_head.html" . }} 
+    {{ template "common/page_head.html" . }}
     <style>
-        pre.prettyprint{
+        pre.prettyprint {
             padding-left: 40px;
         }
+
         pre.prettyprint ol.linenums li {
             list-style-type: decimal;
+        }
+
+        .layui-form-item {
+            position: relative;
+            margin-bottom: 0px;
+            clear: both;
+        }
+
+        .layui-float-panel {
+            position: fixed;
+            /* 固定定位 */
+            top: 20px;
+            /* 距离底部的距离 */
+            right: 20px;
+            /* 距离右侧的距离 */
+            z-index: 999;
+            /* 确保面板在最上层，避免被其他元素遮挡 */
+            /* width: 300px; */
+            /* 可根据需要设定宽度 */
+            background-color: #fff;
+            /* 背景色，可根据需要调整 */
+            border-radius: 5px;
+            /* 边框圆角，增加美观 */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            /* 阴影效果 */
+        }
+
+        .nacos_group_float_dev {
+            position: fixed;
+            /* 固定定位 */
+            bottom: 20px;
+            /* 距离底部的距离 */
+            right: 20px;
+            /* 距离右侧的距离 */
+            z-index: 999;
+            /* 确保面板在最上层，避免被其他元素遮挡 */
+            width: 300px;
+            /* 可根据需要设定宽度 */
+            background-color: #fff;
+            /* 背景色，可根据需要调整 */
+            border-radius: 5px;
+            /* 边框圆角，增加美观 */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            /* 阴影效果 */
         }
     </style>
 </head>
 
 <body style="margin-left: 0px;">
+    <div class="layui-bg-gray" style="padding: 10px;">
+        <!-- 命令空间单选框  面板 -->
+        <div class="layui-row layui-col-space15 layui-float-panel">
+            <div class="layui-col-md12">
+                <div class="layui-panel">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">命名空间ID</label>
+                            <div class="layui-input-block" onclick="selectNamespace()">
 
+                                <input type="radio" name="namespace" value="k8s-test" title="k8s-test" checked="">
+
+                                <input type="radio" name="namespace" value="k8s-uat" title="k8s-uat">
+                                <input type="radio" name="namespace" value="opendev" title="opendev">
+                                <input type="radio" name="namespace" value="dev" title="dev">
+                                <input type="radio" name="namespace" value="k8s-prod" title="k8s-prod" disabled="">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
     <div>
         <div style="margin-left:10px;">
             {{ range $item := .nacosConfigs}}
-            <!-- 循环体 开始-->             
+            <!-- 循环体 开始-->
             <div class="layui-collapse" lay-filter="test">
                 <div class="layui-colla-item">
-                    <h2 class="layui-colla-title">{{$item.Name}}</h2>
-                    <div class="layui-colla-content layui-show">                    
-                        <pre class="prettyprint linenums" lay-title="">{{$item.Content}}</pre>
+                    <h2 class="layui-colla-title"><a name="{{$item.Name}}">{{$item.Name}}</a></h2>
+                    <div class="layui-colla-content layui-show">
+                        <pre class="prettyprint linenums {{$item.FileType}}" lay-title="">{{$item.Content}}</pre>
                     </div>
                 </div>
             </div>
             <!-- 循环体 结束-->
             {{else}}
-                无数据
+            无数据
             {{end}}
+        </div>
+
+        <!-- 浮动目录 -->
+        <div class="nacos_group_float_dev">
+
+            <table class="layui-table" lay-size="sm">
+                <colgroup>
+                    <col width="150">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>文件列表</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range $item := .nacosConfigs}}
+                    <tr>
+                        <td><a href="#{{$item.Name}}">{{$item.Name}}</a></td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+
         </div>
     </div>
 
     <script>
         // 加载 代码高亮
-        prettyPrint();    
+        prettyPrint();
+
+        // 处理namespace单选框: 如果本地缓存中已经选择了namespace, 就勾选对应的单选框
+        var namespace = window.localStorage.namespace || "k8s-test";
+        $('input[type="radio"][name="namespace"][value="' + namespace + '"]').prop('checked', true);
     </script>
 </body>
 </html>

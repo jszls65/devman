@@ -14,7 +14,7 @@
                     <i class="layui-icon layui-icon-spread-left"></i>
                 </li>
 
-                <li class="layui-nav-item layui-hide-xs"><a href="" id="tabTitle">管理后台</a></li>
+                <li class="layui-nav-item layui-hide-xs"><a href="" id="indexPageTitle">管理后台</a></li>
             </ul>
            
         </div>
@@ -25,7 +25,7 @@
                 <ul class="layui-nav layui-nav-tree" lay-filter="test">
 
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> Nacos配置[k8s-test]</i></a>
+                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> Nacos配置</i></a>
 
                     <dl class="layui-nav-child" id="menuFuncAlertD0">
                         <dd><a href="javascript:;"
@@ -42,6 +42,10 @@
                     <dl class="layui-nav-child" id="menuFuncAlertD3">
                         <dd><a href="javascript:;"
                                 onclick="menuFunc('k8s-test,financeServer', 'menuFuncNacosConfig')">financeServer</a></dd>
+                    </dl>
+                    <dl class="layui-nav-child" id="menuFuncAlertD4">
+                        <dd><a href="javascript:;"
+                                onclick="menuFunc('k8s-test,GatewayServer', 'menuFuncNacosConfig')">GatewayServer</a></dd>
                     </dl>
                    
                 </li>

@@ -3,6 +3,8 @@ package controllers
 import (
 	"devman/src/common/config"
 	"log"
+	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nacos-group/nacos-sdk-go/clients"
@@ -16,11 +18,11 @@ type NacosController struct{}
 // 初始化nacos连接
 func (ic NacosController) getNacosClient(namespace string) (config_client.IConfigClient, error) {
 
-	nacosAuth:= config.Conf.NacosAuths[0]
+	nacosAuth := config.Conf.NacosAuths[0]
 	serverConfig := []constant.ServerConfig{
 		{
-			IpAddr: nacosAuth.IpAddr, //nacos 地址
-			Port:   uint64(nacosAuth.Port),                                      //nacos 端口
+			IpAddr: nacosAuth.IpAddr,       //nacos 地址
+			Port:   uint64(nacosAuth.Port), //nacos 端口
 		},
 	}
 
@@ -69,9 +71,13 @@ func (ic NacosController) GetConfig(c *gin.Context) {
 
 		_nacosConfigMap[ic.getKey(group, val)] = content
 
+		// 文件类型
+		fileType := ic.getFileType(val)
+
 		items = append(items, NaocsConfigItem{
-			Name: ic.getKey(group, val),
-			Content: content,
+			Name:     ic.getKey(group, val),
+			FileType: fileType,
+			Content:  content,
 		})
 	}
 
@@ -84,6 +90,16 @@ func (ic NacosController) getKey(group string, dataId string) string {
 	return group + " > " + dataId
 }
 
+func (ic NacosController) getFileType(dataId string) string {
+	fileType := filepath.Ext(dataId)
+	if strings.ToLower(fileType) == ".yml"{
+		return "yaml"
+	}else if strings.ToLower(fileType) == ".properties"{
+		return "properties"
+	}
+	return "js"
+}
+
 // 解析nacos_test.yml配置文件 和上边的字段保持一致
 type NacosTestConfig struct {
 	Name string `json:"name" yaml:"name" mapstructure:"name"`
@@ -91,8 +107,8 @@ type NacosTestConfig struct {
 	Port int    `json:"port" yaml:"port" mapstructure:"port"`
 }
 
-
-type NaocsConfigItem struct{
-	Name string 
-	Content string
+type NaocsConfigItem struct {
+	Name     string
+	Content  string
+	FileType string // 文件类型，前端高亮代码使用
 }

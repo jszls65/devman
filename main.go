@@ -11,8 +11,9 @@ import (
 )
 
 func main() {
-	//func main4() {
+	gin.SetMode(gin.ReleaseMode)
 	g := gin.Default()
+	
 	// 初始化模板函数
 	templatefuns.InitTemplateHandler(g)
 	// html

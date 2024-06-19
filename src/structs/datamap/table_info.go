@@ -1,12 +1,12 @@
 package structs
 
 type TableInfo struct {
-	TableHeadInfo
+	TableHeadInfo `json:"tableHeadInfo"`
 
 	// 表列明细信息
-	Columns []ColumnInfo
+	Columns []ColumnInfo `json:"columns"`
 	// 表分组
-	Group []string
+	Group []string `json:"group"`
 	// 分表数统计
-	SplitCount int32
+	SplitCount int32 `json:"splitCount"`
 }

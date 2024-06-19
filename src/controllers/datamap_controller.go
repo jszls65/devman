@@ -12,14 +12,13 @@ import (
 	"net/http"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type DatamapController struct{}
 
-var tableInfoMap = make(map[string][]structsm.TableInfo) // 环境名称:数据
+var tableInfoMap = make(map[string][]structsm.TableInfo) // map：key=环境-数据库 value=表信息切片
 var sw = sync.WaitGroup{}                                // 同步等待组
 var createTableSqlMap = make(map[string]string)          // 建表语句缓存, key:环境-表名, value是create语句
 
@@ -32,11 +31,16 @@ func (ic DatamapController) Html(c *gin.Context) {
 		log.Println("参数异常")
 		return
 	}
-	tableInfos, ok := utils.GetMap(tableInfoMap, configId)
-	if !ok {
+	// 从reids中获取数据
+	// tableInfos, ok := utils.GetMap(tableInfoMap, configId)
+	tableInfos, _ := persistence.GetDataFromList(configId)
+	if len(tableInfos) == 0 {
 		// 查询数据 刷新缓存
 		ic.refreshCache(configId)
-		tableInfos, _ = utils.GetMap(tableInfoMap, configId)
+		//
+		// tableInfos, _ = utils.GetMap(tableInfoMap, configId)
+		// 从reids中查询数据
+		tableInfos, _ = persistence.GetDataFromList(configId)
 	}
 	tableNames := make([]string, 0)
 	for _, tab := range tableInfos {
@@ -61,7 +65,9 @@ func (ic DatamapController) refreshCache(configId string) {
 	tableInfos := ic.ListTableInfo(configId)
 	tableInfos = fillTableColumnInfo(configId, tableInfos)
 	//tableInfoMap[env] = tableInfos
-	utils.PutMap(tableInfoMap, configId, tableInfos)
+	// 将输入存入redis
+	persistence.SaveData2List(configId, tableInfos)
+	// utils.PutMap(tableInfoMap, configId, tableInfos)
 }
 
 // 填充表字段信息
@@ -246,9 +252,11 @@ func (th DatamapController) TableSearch(context *gin.Context) {
 		return
 	}
 
-	tableInfos, ok := tableInfoMap[configId]
-	if !ok {
-		time.Sleep(1 * time.Second)
+	tableInfos, err := persistence.GetDataFromList(configId)
+	if err != nil {
+		log.Println("从redis中获取表元数据信息失败：", err.Error())
+		context.HTML(http.StatusOK, "datamap/tablesearch.html", gin.H{})
+		return
 	}
 	// tableInfos := th.ListTableInfo(configId)
 	tableNames := make([]string, 0)

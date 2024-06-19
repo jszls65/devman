@@ -1,10 +1,26 @@
 {{ define "datamap/gencode.html"}}
 <html lang="en">
+
 <head>
     <title></title>
+    <style>
+        pre.prettyprint {
+            padding-left: 40px;
+        }
+
+        pre.prettyprint ol.linenums li {
+            list-style-type: decimal;
+        }
+    </style>
 </head>
+
 <body>
-<pre class="layui-code">{{.createSql}}</pre>
+    <pre class="prettyprint linenums sql">{{.createSql}}</pre>
+    <script>
+        // 加载 代码高亮
+        prettyPrint();
+    </script>
 </body>
+
 </html>
 {{ end }}
