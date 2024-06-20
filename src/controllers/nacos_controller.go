@@ -77,6 +77,7 @@ func (ic NacosController) GetConfig(c *gin.Context) {
 		items = append(items, NaocsConfigItem{
 			Name:     ic.getKey(group, val),
 			FileType: fileType,
+			DataId: val,
 			Content:  content,
 		})
 	}
@@ -110,5 +111,6 @@ type NacosTestConfig struct {
 type NaocsConfigItem struct {
 	Name     string
 	Content  string
+	DataId string  
 	FileType string // 文件类型，前端高亮代码使用
 }

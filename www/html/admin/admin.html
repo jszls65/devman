@@ -27,26 +27,13 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> Nacos配置</i></a>
 
-                    <dl class="layui-nav-child" id="menuFuncAlertD0">
+                    {{ range $index, $item := .naocsServers }}
+                    <dl class="layui-nav-child" id="menuFuncAlertD{{$index}}">
                         <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,COMMON_GROUP', 'menuFuncNacosConfig')">COMMON_GROUP</a></dd>
+                                onclick="menuFunc('k8s-test,{{$item.Group}}', 'menuFuncNacosConfig')">{{$item.ServerName}}</a></dd>
                     </dl>
-                    <dl class="layui-nav-child" id="menuFuncAlertDl">
-                        <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,BaseServer', 'menuFuncNacosConfig')">BaseServer</a></dd>
-                    </dl>
-                    <dl class="layui-nav-child" id="menuFuncAlertD2">
-                        <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,OrderServer', 'menuFuncNacosConfig')">OrderServer</a></dd>
-                    </dl>
-                    <dl class="layui-nav-child" id="menuFuncAlertD3">
-                        <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,financeServer', 'menuFuncNacosConfig')">financeServer</a></dd>
-                    </dl>
-                    <dl class="layui-nav-child" id="menuFuncAlertD4">
-                        <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,GatewayServer', 'menuFuncNacosConfig')">GatewayServer</a></dd>
-                    </dl>
+                    {{end}}
+
                    
                 </li>
 

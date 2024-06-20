@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -48,8 +47,9 @@ type NacosAuth struct {
 }
 
 type NacosGroupInfo struct {
-	Group      string `mapstructure:"group"`
-	DataIdsStr string `mapstructure:"dataIds"`
+	Group      string   `mapstructure:"group"`
+	DataIds    []string `mapstructure:"dataIds"`
+	ServerName string   `mapstructure:"serverName"`
 }
 
 func init() {
@@ -129,7 +129,7 @@ func ListEnableMysqlConfig() []MysqlConfig {
 func GetNacosDataIds(group string) []string {
 	for _, v := range Conf.NacosGroups {
 		if v.Group == group {
-			return strings.Split(v.DataIdsStr, ",")
+			return v.DataIds
 		}
 	}
 	return make([]string, 0)
