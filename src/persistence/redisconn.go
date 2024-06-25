@@ -5,6 +5,7 @@ import (
 	structsm "devman/src/structs/datamap"
 	"encoding/json"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -33,6 +34,13 @@ func SaveData2List(configId string, tableInfos []structsm.TableInfo) error {
 	}
 
 	redisKey := getRedisKey4Datamap(configId)
+	// 判断key是否存在
+	err := getClient().Del(redisKey).Err()
+	if err != nil {
+		log.Println("删除key失败: ", err.Error())
+		return err
+	}
+
 	// 将结构体切片转成string切片
 	strList := make([]string, 0)
 	for _, val := range tableInfos {
@@ -45,7 +53,7 @@ func SaveData2List(configId string, tableInfos []structsm.TableInfo) error {
 
 	}
 
-	err := getClient().LPush(redisKey, strList).Err()
+	err = getClient().LPush(redisKey, strList).Err()
 	if err != nil {
 		return err
 	}
@@ -57,7 +65,6 @@ func SaveData2List(configId string, tableInfos []structsm.TableInfo) error {
 
 func GetDataFromList(configId string) ([]structsm.TableInfo, error) {
 	redisKey := getRedisKey4Datamap(configId)
-	// map[string]interface{}
 
 	contentList, err := getClient().LRange(redisKey, 0, -1).Result()
 	if err != nil {
@@ -73,5 +80,8 @@ func GetDataFromList(configId string) ([]structsm.TableInfo, error) {
 }
 
 func getRedisKey4Datamap(flag string) string {
-	return "sqlonedoc:" + flag
+	flag = strings.Replace(flag, "测试环境,", "test_", 1)
+	redisKey := "sqlonedoc:" + flag
+	log.Println("getRedisKey4Datamap_redisKey: ", redisKey)
+	return redisKey
 }

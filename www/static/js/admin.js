@@ -7,8 +7,8 @@ function menuFuncAlert(env, name) {
 function menuFuncNacosConfig(menuName) {
     // namespace从本地缓存中获取
     var namespace = window.localStorage.namespace || "k8s-test";
-    var group = menuName.split(',')[1]
-    $("#iframe_body").attr("src", "/nacos_config?namespace=" + namespace + "&group=" + group);
+    var proid = menuName.split(',')[1]  ;  // git 项目id
+    $("#iframe_body").attr("src", "/nacos_config?namespace=" + namespace + "&proid=" + proid);
 }
 
 
@@ -29,9 +29,15 @@ function menuFunc(configId, fn) {
 
     if (window.localStorage.namespace && fn == 'menuFuncNacosConfig') {
         split[0] = window.localStorage.namespace;
+        $('#indexPageTitle').html(split[0] + " > " + (split[2]||''));
+    }else{
+        if (split.length >=2){
+            $('#indexPageTitle').html(split[0] + " > " + split[1]);
+        }else{
+            $('#indexPageTitle').html(split[0]);
+        }
     }
-
-    $('#indexPageTitle').html(split[0] + " > " + split[1]);
+    
     eval(fn)(configId);
 }
 
@@ -46,7 +52,7 @@ function getSqliteDbOpen() {
 }
 
 // 切换nacos的namespace单选框
-function selectNamespace(obj) {
+function selectNamespace() {
     var namespace = $('input[name="namespace"]:checked').val() || '';
     
     // alert(namespace)
@@ -54,4 +60,9 @@ function selectNamespace(obj) {
 
     // 刷新父页面
     window.parent.location.reload();
+}
+
+var errorMsg = $("#errorMsg") || "";
+if (errorMsg.length > 0){
+    layui.layer.msg(errorMsg);
 }

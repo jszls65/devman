@@ -4,5 +4,7 @@ package structs
 
 type CreateTableBo struct {
 	Table       string `gorm:"column:Table;"`
+	View       string `gorm:"column:View;"`
 	CreateTable string `gorm:"column:Create Table;"`
+	CreateView string `gorm:"column:Create View;"`
 }

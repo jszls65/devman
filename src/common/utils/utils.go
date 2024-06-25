@@ -4,25 +4,41 @@ package utils
 
 import (
 	structsm "devman/src/structs/datamap"
+	"io"
 	"net/http"
 	"strings"
 	"sync"
 )
 
+// 发送http请求-get
+func SendHttpRequstGet(url string, head map[string]string) (string, error) {
+	return sendHttpRequst("GET", url, "", head)
+}
+
+
 // 发送http请求
-func HttpClient(method string, url string, body string) (string, bool) {
-	req, err := http.NewRequest(method, url, strings.NewReader(body))
+func sendHttpRequst(method string, url string, requestBody string, head map[string]string) (string, error) {
+	req, err := http.NewRequest(method, url, strings.NewReader(requestBody))
 	if err != nil {
-		return err.Error(), false
+		return "", err
 	}
 	req.Header.Add("Content-Type", "application/json")
-	//req.Header.Add("Authorization", "Bearer ")
+	if len(head) != 0 {
+		for key, val := range head {
+			req.Header.Add(key, val)
+		}
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil || resp.StatusCode != 200 {
-		return err.Error(), false
+		return "", err
 	}
 	defer resp.Body.Close()
-	return "", true
+	respBodyB, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	bodyStr := string(respBodyB)
+	return bodyStr, nil
 }
 
 var lock sync.RWMutex

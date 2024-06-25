@@ -28,7 +28,7 @@ func (ic AdminController) Html(c *gin.Context) {
 	}
 	c.HTML(200, "admin/admin.html", gin.H{
 		"envs":        envs,
-		"naocsServers": config.Conf.NacosGroups,
+		"naocsServers": config.Conf.GitLab.Projects,
 		"envGroupMap": envGroupMap,
 	})
 }

@@ -25,12 +25,13 @@
                 <ul class="layui-nav layui-nav-tree" lay-filter="test">
 
                 <li class="layui-nav-item layui-nav-itemed">
+                
                     <a class="" href="javascript:;"><i class="layui-icon layui-icon-senior"> Nacos配置</i></a>
 
                     {{ range $index, $item := .naocsServers }}
                     <dl class="layui-nav-child" id="menuFuncAlertD{{$index}}">
                         <dd><a href="javascript:;"
-                                onclick="menuFunc('k8s-test,{{$item.Group}}', 'menuFuncNacosConfig')">{{$item.ServerName}}</a></dd>
+                                onclick="menuFunc('k8s-test,{{$item.Id}},{{$item.Name}}', 'menuFuncNacosConfig')">{{$item.Name}}</a></dd>
                     </dl>
                     {{end}}
 

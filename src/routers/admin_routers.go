@@ -12,5 +12,6 @@ func AdminRouterInit(g *gin.Engine) {
 	group.GET("/", controllers.AdminController{}.Html)
 	group.GET("/welcome", controllers.AdminController{}.Welcome)
 
-	group.GET("/nacos_config", controllers.NacosController{}.GetConfig)
+	// nacos
+	group.GET("/nacos_config", controllers.NacosController{}.Html2GetConfig)
 }

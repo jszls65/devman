@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode) // todo 测试代码
 	g := gin.Default()
 	
 	// 初始化模板函数

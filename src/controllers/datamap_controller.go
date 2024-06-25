@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"devman/src/common"
 	"devman/src/common/config"
-	"devman/src/common/utils"
 	"devman/src/persistence"
 	"devman/src/structs"
 	structsm "devman/src/structs/datamap"
@@ -18,9 +17,8 @@ import (
 
 type DatamapController struct{}
 
-var tableInfoMap = make(map[string][]structsm.TableInfo) // map：key=环境-数据库 value=表信息切片
-var sw = sync.WaitGroup{}                                // 同步等待组
-var createTableSqlMap = make(map[string]string)          // 建表语句缓存, key:环境-表名, value是create语句
+var sw = sync.WaitGroup{}                       // 同步等待组
+var createTableSqlMap = make(map[string]string) // 建表语句缓存, key:环境-表名, value是create语句
 
 // 主页面
 func (ic DatamapController) Html(c *gin.Context) {
@@ -32,13 +30,11 @@ func (ic DatamapController) Html(c *gin.Context) {
 		return
 	}
 	// 从reids中获取数据
-	// tableInfos, ok := utils.GetMap(tableInfoMap, configId)
 	tableInfos, _ := persistence.GetDataFromList(configId)
 	if len(tableInfos) == 0 {
 		// 查询数据 刷新缓存
 		ic.refreshCache(configId)
 		//
-		// tableInfos, _ = utils.GetMap(tableInfoMap, configId)
 		// 从reids中查询数据
 		tableInfos, _ = persistence.GetDataFromList(configId)
 	}
@@ -56,18 +52,13 @@ func (ic DatamapController) Html(c *gin.Context) {
 
 // 刷新缓存
 func (ic DatamapController) refreshCache(configId string) {
-	// defer func() {
-	// 	if re := recover(); re != nil {
-	// 		log.Println("刷新缓存失败: ", re)
-	// 	}
-	// }()
+	// 清空建表语句缓存
+	clear(createTableSqlMap)
 	// 查询数据
 	tableInfos := ic.ListTableInfo(configId)
 	tableInfos = fillTableColumnInfo(configId, tableInfos)
-	//tableInfoMap[env] = tableInfos
 	// 将输入存入redis
 	persistence.SaveData2List(configId, tableInfos)
-	// utils.PutMap(tableInfoMap, configId, tableInfos)
 }
 
 // 填充表字段信息
@@ -223,7 +214,7 @@ func (ic DatamapController) LoadCode(context *gin.Context) {
 	// 获取建表语句
 	mysql, _ := persistence.GetMysql(env)
 	val, ok := createTableSqlMap[env+"-"+tableName]
-	if ok {
+	if ok && val != "" {
 		context.HTML(http.StatusOK, "datamap/gencode.html", gin.H{
 			"createSql": val,
 		})
@@ -236,7 +227,12 @@ func (ic DatamapController) LoadCode(context *gin.Context) {
 	if err != nil {
 		log.Println("sql执行异常:", err.Error())
 	}
+	if ret.CreateTable == ""{
+		ret.CreateTable = ret.CreateView
+	}
+
 	createTableSqlMap[env+"-"+tableName] = ret.CreateTable
+	
 	context.HTML(http.StatusOK, "datamap/gencode.html", gin.H{
 		"createSql": ret.CreateTable,
 	})
@@ -272,18 +268,20 @@ func (ic DatamapController) Share(context *gin.Context) {
 	env, _ := context.GetQuery("env")
 	tableName, _ := context.GetQuery("tableName")
 
-	//tableInfos, ok := tableInfoMap[env]
-	tableInfos, ok := utils.GetMap(tableInfoMap, env)
+	tableInfos, _ := persistence.GetDataFromList(env)
+
+	if len(tableInfos) == 0 {
+		// 查询数据 刷新缓存
+		go ic.refreshCache(env)
+	}
+
 	filterTableInfos := make([]structsm.TableInfo, 0)
 	for _, info := range tableInfos {
 		if info.TableName == tableName {
 			filterTableInfos = append(filterTableInfos, info)
 		}
 	}
-	if !ok {
-		// 查询数据 刷新缓存
-		go ic.refreshCache(env)
-	}
+
 	tableNames := make([]string, 0)
 	for _, tab := range tableInfos {
 		tableNames = append(tableNames, tab.TableName)
@@ -291,7 +289,7 @@ func (ic DatamapController) Share(context *gin.Context) {
 	context.HTML(200, "datamap/list.html", gin.H{
 		"tableInfos": filterTableInfos,
 		"tableNames": strings.Join(tableNames, ","),
-		"env":        env,
+		"configId":        env,
 		"shareFlag":  true,
 	})
 }

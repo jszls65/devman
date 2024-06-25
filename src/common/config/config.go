@@ -17,6 +17,20 @@ type LibraryConfig struct {
 	NacosAuths   []NacosAuth      `mapstructure:"nacos_auths"`
 	NacosGroups  []NacosGroupInfo `mapstructure:"nacos_groups"`
 	Reids        RedisConfig      `mapstructure:"redis"`
+	GitLab       GitLabConfig     `mapstructure:"gitlab"`
+}
+
+type GitLabConfig struct {
+	Url      string                `mapstructure:"url"`
+	Token    string                `mapstructure:"token"`
+	Projects []GitLabProjectConfig `mapstructure:"projects"`
+}
+
+type GitLabProjectConfig struct {
+	Id int `mapstructure:"id"`
+	Name string `mapstructure:"name"`
+	BootstrapPath string `mapstructure:"bootstrap_path"`
+	Branch string `mapstructure:"branch"`
 }
 
 type RedisConfig struct {
@@ -54,7 +68,7 @@ type NacosGroupInfo struct {
 
 func init() {
 	//var configPath string
-
+	
 	viper.SetConfigFile("./config/boot.yml")
 	err := viper.ReadInConfig() // 读取配置文件
 	if err != nil {
@@ -133,4 +147,19 @@ func GetNacosDataIds(group string) []string {
 		}
 	}
 	return make([]string, 0)
+}
+
+
+// 获取配置中的gitlab项目列表
+func ListGitProjects() []GitLabProjectConfig{
+	return Conf.GitLab.Projects
+}
+
+func GetGitProjectById(id int) GitLabProjectConfig{
+	for _, pro := range Conf.GitLab.Projects {
+		if pro.Id == id{
+			return pro
+		}
+	}
+	return GitLabProjectConfig{}
 }
