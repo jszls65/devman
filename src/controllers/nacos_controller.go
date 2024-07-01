@@ -236,24 +236,31 @@ func (ic NacosController) listNacosConfigParam(projectId int) []NacosConfigParam
 		}
 
 	} else {
-
-		servers := viper.Get("spring.cloud.nacos.config.shared-configs").([]interface{})
-		if len(servers) > 0 {
-			for _, server := range servers {
-				serverMap := server.(map[string]interface{})
-				dataId = serverMap["data-id"].(string)
-				group = serverMap["group"].(string)
-				if dataId != "" && group != "" {
-					nacosConfigParams = append(nacosConfigParams, NacosConfigParamBo{DataId: dataId, Group: group})
-				}
-			}
-
-		}
-
+		ic.handleNacosKey2Map("spring.cloud.nacos.config.shared-configs", &nacosConfigParams)
+		ic.handleNacosKey2Map("spring.cloud.nacos.config.extension-configs", &nacosConfigParams)
 	}
 
 	return nacosConfigParams
 
+}
+
+func (ic NacosController) handleNacosKey2Map(key string, paramsList *[]NacosConfigParamBo){
+	if !viper.IsSet(key){
+		return
+	}
+	servers := viper.Get(key).([]interface{})
+	if len(servers) == 0{
+		return 
+	}
+
+	for _, server := range servers {
+		serverMap := server.(map[string]interface{})
+		dataId := serverMap["data-id"].(string)
+		group := serverMap["group"].(string)
+		if dataId != "" && group != "" {
+			*paramsList = append(*paramsList, NacosConfigParamBo{DataId: dataId, Group: group})
+		}
+	}
 }
 
 func (ic NacosController) getGitLabHeadMap() map[string]string {
