@@ -27,8 +27,8 @@ function menuFunc(configId, fn) {
     window.localStorage.menuFunc = fn
     var split = configId.split(",")
 
-    if (window.localStorage.namespace && fn == 'menuFuncNacosConfig') {
-        split[0] = window.localStorage.namespace;
+    if (fn == 'menuFuncNacosConfig') {
+        split[0] = (window.localStorage.namespace || '') == '' ? 'dev' : window.localStorage.namespace;
         $('#indexPageTitle').html(split[0] + " > " + (split[2]||''));
     }else{
         if (split.length >=2){

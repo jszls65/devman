@@ -13,10 +13,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nacos-group/nacos-sdk-go/clients"
-	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
-	"github.com/nacos-group/nacos-sdk-go/vo"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
+	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
 )
 
@@ -39,8 +39,8 @@ func (ic NacosController) getNacosClient(namespace string) (config_client.IConfi
 		NamespaceId:         namespace, //命名空间 比较重要 拿取刚才创建的命名空间ID
 		TimeoutMs:           5000,
 		NotLoadCacheAtStart: true,
-		LogDir:              "/tmp/nacos/log",
-		CacheDir:            "/tmp/nacos/cache",
+		LogDir:              "c:/tmp/nacos/log",
+		CacheDir:            "c:/tmp/nacos/cache",
 		LogLevel:            "debug",
 		AccessKey:           nacosAuth.AccessKey,
 		SecretKey:           nacosAuth.SecretKey,
@@ -62,8 +62,6 @@ func (ic NacosController) Html2GetConfig(c *gin.Context) {
 
 	nacosConfigParams := ic.listNacosConfigParam(projectId)
 
-	// nacos配置map， key: group+'_'+dataId
-	// var _nacosConfigMap = make(map[string]string)
 	var voList = []NaocsConfigItem{}
 
 	for _, val := range nacosConfigParams {
@@ -209,48 +207,46 @@ func (ic NacosController) listNacosConfigParam(projectId int) []NacosConfigParam
 	}
 
 	if bootstrapFileType == "properties" {
-		for i := 0; i < 10; i++ {
-			server := viper.Get("spring.cloud.nacos.config.extension-configs[" + strconv.Itoa(i) + "]")
-			if server == nil {
-				break
-			}
-			serverMap := server.(map[string]interface{})
-			dataId = serverMap["data-id"].(string)
-			group = serverMap["group"].(string)
-			if dataId != "" && group != "" {
-				nacosConfigParams = append(nacosConfigParams, NacosConfigParamBo{DataId: dataId, Group: group})
-			}
-		}
 
-		for i := 0; i < 10; i++ {
-			server := viper.Get("spring.cloud.nacos.config.shared-configs[" + strconv.Itoa(i) + "]")
-			if server == nil {
-				break
-			}
-			serverMap := server.(map[string]interface{})
-			dataId = serverMap["data-id"].(string)
-			group = serverMap["group"].(string)
-			if dataId != "" && group != "" {
-				nacosConfigParams = append(nacosConfigParams, NacosConfigParamBo{DataId: dataId, Group: group})
-			}
-		}
+		nacosConfigParams = ic.handleNacosKey2Map4Properties("spring.cloud.nacos.config.shared-configs", nacosConfigParams)
+		nacosConfigParams = ic.handleNacosKey2Map4Properties("spring.cloud.nacos.config.extension-configs", nacosConfigParams)
 
 	} else {
-		ic.handleNacosKey2Map("spring.cloud.nacos.config.shared-configs", &nacosConfigParams)
-		ic.handleNacosKey2Map("spring.cloud.nacos.config.extension-configs", &nacosConfigParams)
+		nacosConfigParams = ic.handleNacosKey2Map4Yaml("spring.cloud.nacos.config.shared-configs", nacosConfigParams)
+		nacosConfigParams = ic.handleNacosKey2Map4Yaml("spring.cloud.nacos.config.extension-configs", nacosConfigParams)
 	}
 
 	return nacosConfigParams
 
 }
 
-func (ic NacosController) handleNacosKey2Map(key string, paramsList *[]NacosConfigParamBo){
-	if !viper.IsSet(key){
-		return
+func (ic NacosController) handleNacosKey2Map4Properties(key string, nacosConfigParams []NacosConfigParamBo) []NacosConfigParamBo {
+	for i := 0; i < 10; i++ {
+		nacosKey := key + "[" + strconv.Itoa(i) + "]"
+		if !viper.IsSet(nacosKey) {
+			continue
+		}
+		server := viper.Get(nacosKey)
+		if server == nil {
+			break
+		}
+		serverMap := server.(map[string]interface{})
+		dataId := serverMap["data-id"].(string)
+		group := serverMap["group"].(string)
+		if dataId != "" && group != "" {
+			nacosConfigParams = append(nacosConfigParams, NacosConfigParamBo{DataId: dataId, Group: group})
+		}
+	}
+	return nacosConfigParams
+}
+
+func (ic NacosController) handleNacosKey2Map4Yaml(key string, paramsList []NacosConfigParamBo) []NacosConfigParamBo {
+	if !viper.IsSet(key) {
+		return paramsList
 	}
 	servers := viper.Get(key).([]interface{})
-	if len(servers) == 0{
-		return 
+	if len(servers) == 0 {
+		return paramsList
 	}
 
 	for _, server := range servers {
@@ -258,9 +254,10 @@ func (ic NacosController) handleNacosKey2Map(key string, paramsList *[]NacosConf
 		dataId := serverMap["data-id"].(string)
 		group := serverMap["group"].(string)
 		if dataId != "" && group != "" {
-			*paramsList = append(*paramsList, NacosConfigParamBo{DataId: dataId, Group: group})
+			paramsList = append(paramsList, NacosConfigParamBo{DataId: dataId, Group: group})
 		}
 	}
+	return paramsList
 }
 
 func (ic NacosController) getGitLabHeadMap() map[string]string {
