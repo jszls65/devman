@@ -68,12 +68,10 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">命名空间ID</label>
                             <div class="layui-input-block" onclick="selectNamespace()">
-
-                                <input type="radio" name="namespace" value="k8s-test" title="k8s-test" checked="">
-
-                                <input type="radio" name="namespace" value="k8s-uat" title="k8s-uat">
-                                <input type="radio" name="namespace" value="opendev" title="opendev">
                                 <input type="radio" name="namespace" value="dev" title="dev">
+                                <input type="radio" name="namespace" value="opendev" title="opendev">
+                                <input type="radio" name="namespace" value="k8s-test" title="k8s-test" checked="">
+                                <input type="radio" name="namespace" value="k8s-uat" title="k8s-uat">
                                 <input type="radio" name="namespace" value="k8s-prod" title="k8s-prod" disabled="">
                             </div>
                         </div>
@@ -132,5 +130,6 @@
         $('input[type="radio"][name="namespace"][value="' + namespace + '"]').prop('checked', true);
     </script>
 </body>
+
 </html>
 {{ end }}

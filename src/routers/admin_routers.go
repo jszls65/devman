@@ -14,4 +14,7 @@ func AdminRouterInit(g *gin.Engine) {
 
 	// nacos
 	group.GET("/nacos_config", controllers.NacosController{}.Html2GetConfig)
+	group.GET("/nacos_discovery", controllers.NacosController{}.Html2Discovery)
+	group.GET("/nacos_discovery/list", controllers.NacosController{}.DiscoveryList)
+	group.GET("/nacos_discovery/enable", controllers.NacosController{}.DiscoveryEnable)
 }

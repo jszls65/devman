@@ -11,6 +11,12 @@ function menuFuncNacosConfig(menuName) {
     $("#iframe_body").attr("src", "/nacos_config?namespace=" + namespace + "&proid=" + proid);
 }
 
+function menuFuncNacosDiscovery(menuName) {
+    // namespace从本地缓存中获取
+    // var namespace = window.localStorage.namespace || "k8s-test";
+    // var proid = menuName.split(',')[1]  ;  // git 项目id
+    $("#iframe_body").attr("src", "/nacos_discovery");
+}
 
 function menuFuncTool(env, name) {
     $("#iframe_body").attr("src", "/tool");

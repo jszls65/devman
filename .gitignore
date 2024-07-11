@@ -32,3 +32,4 @@ devman.zip
 go.sum
 .vscode
 config/config-dev.yml
+cache

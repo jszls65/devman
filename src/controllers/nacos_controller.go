@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
@@ -25,7 +26,7 @@ type NacosController struct{}
 var bootstrapMap = make(map[int]NaocsConfigItem)
 
 // 获取nacos连接
-func (ic NacosController) getNacosClient(namespace string) (config_client.IConfigClient, error) {
+func (ic NacosController) getNacosConfigClient(namespace string) (config_client.IConfigClient, error) {
 
 	nacosAuth := config.Conf.NacosAuths[0]
 	serverConfig := []constant.ServerConfig{
@@ -53,11 +54,33 @@ func (ic NacosController) getNacosClient(namespace string) (config_client.IConfi
 	)
 }
 
+// 获取nacos 服务注册 client
+func (ic NacosController) getNacosDiscoveryClient(namespace string) (naming_client.INamingClient, error) {
+
+	nacosAuth := config.Conf.NacosAuths[0]
+	serverConfig := []constant.ServerConfig{
+		{
+			IpAddr: nacosAuth.IpAddr,       //nacos 地址
+			Port:   uint64(nacosAuth.Port), //nacos 端口
+		},
+	}
+	return clients.NewNamingClient(
+		vo.NacosClientParam{
+			ServerConfigs: serverConfig,
+			ClientConfig: &constant.ClientConfig{
+				AccessKey:   nacosAuth.AccessKey,
+				SecretKey:   nacosAuth.SecretKey,
+				NamespaceId: namespace,
+			},
+		},
+	)
+}
+
 // 获取配置
 func (ic NacosController) Html2GetConfig(c *gin.Context) {
 	namespace, _ := c.GetQuery("namespace")
 	projectIdOrg, _ := c.GetQuery("proid")
-	nacosClient, _ := ic.getNacosClient(namespace)
+	nacosClient, _ := ic.getNacosConfigClient(namespace)
 	projectId, _ := strconv.Atoi(projectIdOrg)
 
 	nacosConfigParams := ic.listNacosConfigParam(projectId)
@@ -290,4 +313,136 @@ type GitLabFileInfo struct {
 	FileName string `json:"file_name"`
 	FilePath string `json:"file_path"`
 	Content  string `json:"content"`
+}
+
+type NacosServiceVo struct {
+	No          int     `json:"no"`
+	Service     string  `json:"service"`
+	ServiceName string  `json:"serviceName"`
+	IP          string  `json:"ip"`
+	Weight      float64 `json:"weight"`
+	Healthy     bool    `json:"healthy"`
+	Enable      bool    `json:"enable"`
+	Ephemeral   bool    `json:"ephemeral"`
+	Metadata    string  `json:"metadata"`
+}
+
+// 页面 服务注册
+func (ic NacosController) Html2Discovery(c *gin.Context) {
+	c.HTML(200, "nacos/nacos_discovery.html", gin.H{})
+}
+
+func (ic NacosController) DiscoveryList(c *gin.Context) {
+	namespace, _ := c.GetQuery("namespace")
+	ss, _ := c.GetQuery("serviceName")
+	discoveryClient, err := ic.getNacosDiscoveryClient(namespace)
+	if err != nil {
+		log.Println("获取nacos discovery client失败", err.Error())
+		return
+	}
+
+	serviceList, err := discoveryClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
+		NameSpace: namespace,
+		PageNo:   1,
+		PageSize: 100,
+	})
+	if err != nil {
+		log.Println("获取nacos服务列表失败, namespace:", namespace)
+	}
+	voList := make([]NacosServiceVo, 0)
+	index := 0
+	for _, serviceName := range serviceList.Doms {
+		if !strings.Contains(serviceName, ss) {
+			continue
+		}
+		instanceList, _ := discoveryClient.SelectAllInstances(vo.SelectAllInstancesParam{
+			ServiceName: serviceName,
+		})
+		if err != nil {
+			log.Println("获取实例失败,", err.Error())
+			continue
+		}
+
+		for _, ins := range instanceList {
+			m, _ := json.Marshal(ins.Metadata)
+			index = index + 1
+			voList = append(voList, NacosServiceVo{
+				No:          index,
+				ServiceName: ins.ServiceName,
+				Service:     serviceName,
+				IP:          ins.Ip + ":" + strconv.Itoa(int(ins.Port)),
+				Weight:      ins.Weight,
+				Metadata:    string(m),
+				Healthy:     ins.Healthy,
+				Enable:      ins.Enable,
+				Ephemeral:   ins.Ephemeral,
+			})
+		}
+	}
+	c.JSON(200, gin.H{
+		"code":  0,
+		"msg":   "",
+		"count": len(voList),
+		"data":  voList,
+	})
+}
+
+// 服务上线下线
+func (ic NacosController) DiscoveryEnable(c *gin.Context) {
+	enable, _ := c.GetQuery("v")
+	namespace, _ := c.GetQuery("namespace")
+	serviceName, _ := c.GetQuery("serviceName")
+	ip, _ := c.GetQuery("ip")
+	portStr, _ := c.GetQuery("port")
+	port, _ := strconv.Atoi(portStr)
+	var err error
+	var ok bool
+	discoveryClient, _ := ic.getNacosDiscoveryClient(namespace)
+	if enable == "0" {
+		// 注销服务
+		ok, err = discoveryClient.DeregisterInstance(vo.DeregisterInstanceParam{
+			// Group:      groupName,
+			ServiceName: serviceName,
+			Ip:          ip,
+			Port:        uint64(port),
+			Ephemeral:   true,
+		})
+
+	} else {
+		// 上线服务
+		ok, err = discoveryClient.RegisterInstance(vo.RegisterInstanceParam{
+			Ip:          ip,
+			Port:        uint64(port),
+			Weight:      1,
+			Enable:      enable == "1",
+			Healthy:     true,
+			ServiceName: serviceName,
+			Ephemeral:   true,
+		})
+
+	}
+
+	// ok, err = discoveryClient.UpdateInstance(vo.UpdateInstanceParam{
+	// 	Ip:          ip,
+	// 	Port:        uint64(port),
+	// 	Weight:      1,
+	// 	Enable:      enable == "1",
+	// 	Healthy:     true,
+	// 	ServiceName: serviceName,
+	// })
+
+	log.Println("操作结果:", ok)
+	if err != nil {
+		log.Println("注册服务失败:", err.Error())
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "注册服务失败:" + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "操作虽然成功了, 但有可能没有权限.",
+	})
 }
